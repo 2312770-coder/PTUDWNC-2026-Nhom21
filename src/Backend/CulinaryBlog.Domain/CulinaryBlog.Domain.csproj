@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>CulinaryBlog.Domain</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- SRS mục 6.2 nói Domain không có NuGet dependency, nhưng mục 7.7 lại
+         yêu cầu ApplicationUser kế thừa IdentityUser - nên buộc phải tham chiếu
+         gói Identity model này. Xem docs/DECISIONS.md D2. -->
+    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="10.0.12" />
+  </ItemGroup>
+
+</Project>

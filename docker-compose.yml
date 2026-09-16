@@ -1,0 +1,77 @@
+# Hạ tầng cho môi trường development (SRS mục 6.5).
+# Chạy: docker compose up -d
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: culinaryblog-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: culinary_blog
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: culinaryblog-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+  # SRS ghi minio/minio:latest nhưng Docker Hub đã chặn pull image đó,
+  # nên dùng registry chính chủ của MinIO (xem docs/DECISIONS.md D5).
+  minio:
+    image: quay.io/minio/minio:RELEASE.2024-01-16T16-07-38Z
+    container_name: culinaryblog-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"   # API
+      - "9001:9001"   # Giao diện quản trị
+    volumes:
+      - minio-data:/data
+
+  # Xem log tập trung (FR-OBS-002). Chỉ dùng cho dev.
+  # Ghim bản 2023.4 vì bản mới hay crash trên Docker Desktop Windows
+  # (xem docs/DECISIONS.md D5).
+  seq:
+    image: datalust/seq:2023.4
+    container_name: culinaryblog-seq
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "Y"
+    ports:
+      - "5341:80"
+    volumes:
+      - seq-data:/data
+    stop_grace_period: 30s
+
+  # Máy chủ mail giả để test email (FR-JOB-001). Xem mail đã gửi tại
+  # http://localhost:8025 - mail không đi ra ngoài thật.
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: culinaryblog-mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Giao diện web
+
+volumes:
+  postgres-data:
+  redis-data:
+  minio-data:
+  seq-data:
