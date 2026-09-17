@@ -42,28 +42,17 @@ Tuần 7: Kiểm thử tổng thể MinIO bucket, luồng hồ sơ cá nhân, ho
 
 ## 4. HƯỚNG DẪN CHI TIẾT TUẦN 2 (TUẦN NÀY BẮT ĐẦU LÀM)
 
-> ⚠️ **Git**: Bạn làm việc trên **nhánh cá nhân** `2312792-NguyenDinhTuan`. **Không tự merge vào `main`**
-
-### Thiết lập nhánh cá nhân (lần đầu)
-```powershell
-git checkout -b 2312792-NguyenDinhTuan
-git push -u origin 2312792-NguyenDinhTuan
-```
-*Từ những lần sau chỉ cần:* `git checkout 2312792-NguyenDinhTuan`
-
-### Trước khi code mỗi ngày — đồng bộ với `main`
-```powershell
-git fetch origin
-git merge origin/main
-```
+> ⚠️ **Quy ước nhánh**: Mỗi chức năng làm trên **một nhánh riêng** tự tạo từ `main`, cú pháp: `2312792-NDTuan-<Ten-Chuc-Nang>`. **Không tự merge vào `main`** — báo trưởng nhóm Tiến để Tiến review và merge giúp.
 
 ---
 
 ### Chức năng 1: Tải ảnh lên MinIO (FR-FILE-001)
 
-#### Bước 1: Chuyển sang nhánh cá nhân của bạn
+#### Bước 1: Tạo nhánh mới từ `main`
 ```powershell
-git checkout 2312792-NguyenDinhTuan
+git checkout main
+git pull origin main
+git checkout -b 2312792-NDTuan-Upload-Minio
 ```
 
 #### Bước 2: Hiện thực Backend
@@ -80,24 +69,26 @@ git checkout 2312792-NguyenDinhTuan
 1. Xây dựng component upload ảnh dùng chung: `src/Frontend/components/ui/ImageUploader.tsx`.
 2. Có khung kéo thả ảnh (drag & drop), hiển thị preview ảnh sau khi upload thành công, hiển thị URL ảnh đã upload.
 
-#### Bước 4: Commit và push
+#### Bước 4: Kiểm tra và đẩy nhánh lên GitHub
 ```powershell
 dotnet build CulinaryBlog.slnx
 cd src\Frontend; npm run lint; cd ..\..
 
 git add .
 git commit -m "file: hien thuc FR-FILE-001 upload anh len minio"
-git push origin 2312792-NguyenDinhTuan
+git push -u origin 2312792-NDTuan-Upload-Minio
 ```
-
+Nhắn trưởng nhóm Tiến qua Zalo để Tiến review và merge vào `main`.
 
 ---
 
 ### Chức năng 2: Xóa ảnh trên MinIO (FR-FILE-002)
 
-#### Bước 1: Tiếp tục trên nhánh cá nhân
+#### Bước 1: Tạo nhánh mới từ `main` (sau khi chức năng 1 đã xong)
 ```powershell
-git checkout 2312792-NguyenDinhTuan
+git checkout main
+git pull origin main
+git checkout -b 2312792-NDTuan-Xoa-Anh-Minio
 ```
 
 #### Bước 2: Hiện thực Backend & Frontend
@@ -106,13 +97,16 @@ git checkout 2312792-NguyenDinhTuan
    - Gửi yêu cầu xóa tới MinIO qua `RemoveObjectAsync`.
 2. Frontend: Nút bấm hình thùng rác hoặc dấu X trên ảnh preview để xóa ảnh đã chọn, có hộp thoại xác nhận trước khi xóa.
 
-#### Bước 3: Commit và push
+#### Bước 3: Kiểm tra và đẩy nhánh lên GitHub
 ```powershell
+dotnet build CulinaryBlog.slnx
+cd src\Frontend; npm run lint; cd ..\..
+
 git add .
 git commit -m "file: hien thuc FR-FILE-002 xoa anh minio"
-git push origin 2312792-NguyenDinhTuan
+git push -u origin 2312792-NDTuan-Xoa-Anh-Minio
 ```
-
+Nhắn trưởng nhóm Tiến qua Zalo để Tiến review và merge vào `main`.
 
 ---
 
@@ -120,6 +114,7 @@ git push origin 2312792-NguyenDinhTuan
 - [ ] Upload được ảnh JPG/PNG/WebP lên MinIO; ảnh xuất hiện trong bucket tại MinIO Console `http://localhost:9001` (user: `minioadmin` / `minioadmin`).
 - [ ] Truy cập trực tiếp link ảnh trên trình duyệt hiển thị sắc nét.
 - [ ] File quá 5MB hoặc sai định dạng bị chặn và trả về lỗi rõ ràng.
-- [ ] Nhánh cá nhân `2312792-NguyenDinhTuan` đã được đẩy lên GitHub.
+- [ ] Các nhánh chức năng `2312792-NDTuan-Upload-Minio` và `2312792-NDTuan-Xoa-Anh-Minio` đã được đẩy lên GitHub.
 - [ ] Cả backend và frontend đều biên dịch sạch bóng lỗi.
+
 

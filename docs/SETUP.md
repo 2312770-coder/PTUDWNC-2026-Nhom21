@@ -122,26 +122,33 @@ Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 
 ## 8. Quy trình làm việc với Git
 
-Mỗi thành viên làm việc trên **nhánh cá nhân riêng** của mình (cú pháp: `<MSSV>-<HoTenKhongDau>`).
+Mỗi thành viên làm việc trên **từng nhánh riêng cho mỗi chức năng** (cú pháp: `<MSSV>-<VietTatHoDemTen>-<Ten-Chuc-Nang>`).
 **Không tự merge vào `main`** — chỉ trưởng nhóm **Lê Nhật Tiến** mới được merge.
 
 ```powershell
-# Lần đầu: tạo nhánh cá nhân và đẩy lên GitHub
-git checkout -b 2314299-LamVanDuc    # Thay bằng tên nhánh của bạn
-git push -u origin 2314299-LamVanDuc
+# 1. Luôn cập nhật code mới nhất từ main trước khi tạo nhánh mới
+git checkout main
+git pull origin main
 
-# Mỗi ngày trước khi code: đồng bộ với main mới nhất
-git checkout 2314299-LamVanDuc
-git fetch origin
-git merge origin/main
+# 2. Tự tạo nhánh cho chức năng bạn sắp làm
+# Ví dụ Tuấn làm upload MinIO:
+git checkout -b 2312792-NDTuan-Upload-Minio
 
-# Code xong thì commit và push
+# Ví dụ Đức làm đăng ký:
+git checkout -b 2314299-LVDuc-Dang-Ky
+
+# 3. Code xong thì kiểm tra build và lint sạch lỗi
+dotnet build CulinaryBlog.slnx
+npm run lint    # trong thư mục src/Frontend
+
+# 4. Commit và push nhánh chức năng lên GitHub
 git add .
-git commit -m "auth: hien thuc dang ky tai khoan FR-AUTH-001"
-git push origin 2314299-LamVanDuc
+git commit -m "file: upload anh len minio 5mb FR-FILE-001"
+git push -u origin 2312792-NDTuan-Upload-Minio
+
+# 5. Báo trưởng nhóm Tiến qua nhóm Zalo để Tiến review và merge vào main
 ```
 
-Sau khi push xong, báo trường nhóm
 
 
 

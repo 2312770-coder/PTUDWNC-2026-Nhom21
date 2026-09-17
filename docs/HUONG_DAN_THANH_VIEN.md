@@ -91,37 +91,38 @@ Mở trình duyệt: http://localhost:3000
 
 > ⚠️ **Quan trọng**: Thành viên **KHÔNG tự merge vào `main`**. Chỉ có trưởng nhóm **Lê Nhật Tiến (2312770)** mới được merge sau khi review và xác nhận không xung đột.
 
-### 3.1. Nhánh cá nhân — mỗi người một nhánh làm việc riêng
+### 3.1. Quy ước đặt tên nhánh theo từng chức năng
 
-Mỗi thành viên có một nhánh cá nhân cố định để code trong suốt dự án, đặt theo cú pháp:
+Mỗi chức năng (FR) được làm trên **một nhánh riêng biệt**, tự tạo từ nhánh `main` theo cú pháp:
 
 ```
-<MSSV>-<HoTenKhongDau>
+<MSSV>-<VietTatHoDemTen>-<Ten-Chuc-Nang>
 ```
 
-| Thành viên | Nhánh cá nhân |
-| :--- | :--- |
-| Lê Nhật Tiến (Trưởng nhóm) | `2312770-LeNhatTien` |
-| Lâm Văn Đức | `2314299-LamVanDuc` |
-| Nguyễn Viết Toàn | `2312777-NguyenVietToan` |
-| Nguyễn Đình Tuấn | `2312792-NguyenDinhTuan` |
+| Thành viên | Cú pháp tiền tố | Ví dụ nhánh chức năng |
+| :--- | :--- | :--- |
+| Lê Nhật Tiến (Trưởng nhóm) | `2312770-LNTien-` | `2312770-LNTien-Tao-Cong-Thuc`, `2312770-LNTien-Chi-Tiet-Danh-Muc` |
+| Lâm Văn Đức | `2314299-LVDuc-` | `2314299-LVDuc-Dang-Ky`, `2314299-LVDuc-Dang-Nhap` |
+| Nguyễn Viết Toàn | `2312777-NVToan-` | `2312777-NVToan-Danh-Sach-Danh-Muc`, `2312777-NVToan-Tao-Danh-Muc` |
+| Nguyễn Đình Tuấn | `2312792-NDTuan-` | `2312792-NDTuan-Upload-Minio`, `2312792-NDTuan-Xoa-Anh-Minio` |
 
-### 3.2. Quy trình làm việc hàng ngày
+### 3.2. Quy trình làm việc cho từng chức năng
 
-#### Bước 1: Tạo nhánh cá nhân (chỉ làm một lần duy nhất)
+#### Bước 1: Luôn cập nhật code mới nhất từ nhánh `main`
+Trước khi tạo nhánh làm chức năng mới, luôn lấy code mới nhất:
 ```powershell
-git checkout -b 2314299-LamVanDuc    # Thay bằng tên nhánh của bạn
-git push -u origin 2314299-LamVanDuc
-```
-Nếu nhánh đã tồn tại trên GitHub thì checkout bình thường:
-```powershell
-git checkout 2314299-LamVanDuc
+git checkout main
+git pull origin main
 ```
 
-#### Bước 2: Trước khi bắt đầu code mỗi ngày — đồng bộ với `main`
+#### Bước 2: Tự tạo nhánh làm việc mới cho chức năng
 ```powershell
-git fetch origin
-git merge origin/main    # Kéo code mới nhất từ main về nhánh của bạn
+# Cú pháp: git checkout -b <MSSV>-<VietTatHoDemTen>-<Ten-Chuc-Nang>
+# Ví dụ Tuấn làm upload MinIO:
+git checkout -b 2312792-NDTuan-Upload-Minio
+
+# Ví dụ Đức làm đăng ký:
+git checkout -b 2314299-LVDuc-Dang-Ky
 ```
 
 #### Bước 3: Code và kiểm tra cẩn thận trên máy cá nhân
@@ -133,7 +134,7 @@ git merge origin/main    # Kéo code mới nhất từ main về nhánh của b�
 Quy ước thông điệp commit: `<module>: <mô tả ngắn> <mã FR>`
 ```powershell
 git add .
-git commit -m "auth: hien thuc dang ky tai khoan FR-AUTH-001"
+git commit -m "file: upload anh len minio 5mb FR-FILE-001"
 ```
 
 *Một số ví dụ commit hợp lệ:*
@@ -141,14 +142,19 @@ git commit -m "auth: hien thuc dang ky tai khoan FR-AUTH-001"
 - `category: them api lay danh sach danh muc kem so recipe FR-CAT-001`
 - `file: cau hinh upload anh len minio FR-FILE-001`
 
-#### Bước 5: Đẩy nhánh cá nhân lên GitHub
+#### Bước 5: Đẩy nhánh chức năng lên GitHub
 ```powershell
-git push origin 2314299-LamVanDuc    # Thay bằng tên nhánh của bạn
+git push -u origin 2312792-NDTuan-Upload-Minio    # Thay bằng tên nhánh chức năng của bạn
 ```
 
 #### Bước 6: Báo trưởng nhóm review và merge
-1. Nhắn vào nhóm Zalo/Discord: *"Mình vừa push xong FR-AUTH-001 lên nhánh `2314299-LamVanDuc`
-2. Trưởng nhóm **Tiến** vào GitHub, so sánh nhánh của bạn với `main`, review code, và nếu ổn sẽ **merge vào `main`** thay bạn.
+1. Nhắn vào nhóm Zalo/Discord: *"Mình vừa push xong FR-FILE-001 lên nhánh `2312792-NDTuan-Upload-Minio`, Tiến review giúp nhé."*
+2. Trưởng nhóm **Tiến** vào GitHub, so sánh nhánh với `main`, review code, và nếu ổn sẽ **merge vào `main`**.
+3. Sau khi Tiến thông báo đã merge xong, bạn chuyển về `main` để pull code mới nhất về trước khi làm chức năng tiếp theo:
+```powershell
+git checkout main
+git pull origin main
+```
 
 ---
 

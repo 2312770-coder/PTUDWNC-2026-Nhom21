@@ -42,51 +42,43 @@ Tuần 7: Kiểm thử UI Admin Category & Search, tối ưu truy vấn, hoàn t
 
 ## 4. HƯỚNG DẪN CHI TIẾT TUẦN 2 (TUẦN NÀY BẮT ĐẦU LÀM)
 
-> ⚠️ **Git**: Bạn làm việc trên **nhánh cá nhân** `2312777-NguyenVietToan`. **Không tự merge vào `main`** 
-
-### Thiết lập nhánh cá nhân (lần đầu)
-```powershell
-git checkout -b 2312777-NguyenVietToan
-git push -u origin 2312777-NguyenVietToan
-```
-*Từ những lần sau chỉ cần:* `git checkout 2312777-NguyenVietToan`
-
-### Trước khi code mỗi ngày — đồng bộ với `main`
-```powershell
-git fetch origin
-git merge origin/main
-```
+> ⚠️ **Quy ước nhánh**: Mỗi chức năng làm trên **một nhánh riêng** tự tạo từ `main`, cú pháp: `2312777-NVToan-<Ten-Chuc-Nang>`. **Không tự merge vào `main`** — báo trưởng nhóm Tiến để Tiến review và merge giúp.
 
 ---
 
 ### Chức năng 1: Xem danh sách danh mục (FR-CAT-001)
 
-#### Bước 1: Chuyển sang nhánh cá nhân của bạn
+#### Bước 1: Tạo nhánh mới từ `main`
 ```powershell
-git checkout 2312777-NguyenVietToan
+git checkout main
+git pull origin main
+git checkout -b 2312777-NVToan-Danh-Sach-Danh-Muc
 ```
 
 #### Bước 2: Kiểm tra Backend & Hoàn thiện Frontend
 1. Backend: Xem file `src/Backend/CulinaryBlog.Application/Features/Categories/Queries/GetCategories/GetCategoriesQueryHandler.cs` (đã có khung mẫu truy vấn theo `OrderIndex` và đếm số bài viết). Bạn kiểm tra lại logic và bổ sung comment giải thích thuật toán.
 2. Frontend: Tạo trang xem toàn bộ danh mục tại `src/Frontend/app/(public)/categories/page.tsx` hiển thị lưới các danh mục dạng card với hình ảnh đại diện, mô tả và số lượng công thức thực tế.
 
-#### Bước 3: Commit và push
+#### Bước 3: Kiểm tra và đẩy nhánh lên GitHub
 ```powershell
 dotnet build CulinaryBlog.slnx
 cd src\Frontend; npm run lint; cd ..\..
 
 git add .
 git commit -m "category: hien thuc FR-CAT-001 danh sach danh muc"
-git push origin 2312777-NguyenVietToan
+git push -u origin 2312777-NVToan-Danh-Sach-Danh-Muc
 ```
+Nhắn trưởng nhóm Tiến qua Zalo để Tiến review và merge vào `main`.
 
 ---
 
 ### Chức năng 2: Admin tạo danh mục mới (FR-CAT-003)
 
-#### Bước 1: Tiếp tục trên nhánh cá nhân
+#### Bước 1: Tạo nhánh mới từ `main` (sau khi chức năng 1 đã xong)
 ```powershell
-git checkout 2312777-NguyenVietToan
+git checkout main
+git pull origin main
+git checkout -b 2312777-NVToan-Tao-Danh-Muc
 ```
 
 #### Bước 2: Hiện thực Backend & Frontend
@@ -97,12 +89,16 @@ git checkout 2312777-NguyenVietToan
    - Trả về `CategoryDto`.
 2. Frontend: Tạo trang quản trị danh mục `src/Frontend/app/(admin)/categories/page.tsx` có bảng danh mục hiện có và form nhập tên danh mục, mô tả, ảnh đại diện và thứ tự hiển thị `OrderIndex`.
 
-#### Bước 3: Commit và push
+#### Bước 3: Kiểm tra và đẩy nhánh lên GitHub
 ```powershell
+dotnet build CulinaryBlog.slnx
+cd src\Frontend; npm run lint; cd ..\..
+
 git add .
 git commit -m "category: hien thuc FR-CAT-003 tao danh muc moi"
-git push origin 2312777-NguyenVietToan
+git push -u origin 2312777-NVToan-Tao-Danh-Muc
 ```
+Nhắn trưởng nhóm Tiến qua Zalo để Tiến review và merge vào `main`.
 
 ---
 
@@ -110,6 +106,7 @@ git push origin 2312777-NguyenVietToan
 - [ ] Endpoint `GET /api/v1/categories` trả về đúng danh sách và số bài viết.
 - [ ] Endpoint `POST /api/v1/categories` tạo được danh mục mới kèm slug tự động chuẩn SEO.
 - [ ] Trang `/categories` hiển thị card danh mục trực quan với đúng số lượng công thức.
-- [ ] Nhánh cá nhân `2312777-NguyenVietToan` đã được đẩy lên GitHub.
+- [ ] Các nhánh chức năng `2312777-NVToan-Danh-Sach-Danh-Muc` và `2312777-NVToan-Tao-Danh-Muc` đã được đẩy lên GitHub.
 - [ ] Build và Lint cả dự án đều đạt 0 lỗi.
+
 

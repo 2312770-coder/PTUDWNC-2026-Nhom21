@@ -48,28 +48,17 @@ Tuần 7: Kiểm thử tổng thể, review toàn bộ PRs của nhóm, hoàn th
 
 ## 4. HƯỚNG DẪN CHI TIẾT TUẦN 2 (TUẦN NÀY BẮT ĐẦU LÀM)
 
-> ⚠️ **Git**: Bạn làm việc trên **nhánh cá nhân** `2312770-LeNhatTien`. Sau khi push xong, bạn tự review rồi merge vào `main` với tư cách trưởng nhóm.
-
-### Thiết lập nhánh cá nhân (lần đầu)
-```powershell
-git checkout -b 2312770-LeNhatTien
-git push -u origin 2312770-LeNhatTien
-```
-*Từ những lần sau chỉ cần:* `git checkout 2312770-LeNhatTien`
-
-### Trước khi code mỗi ngày — đồng bộ với `main`
-```powershell
-git fetch origin
-git merge origin/main
-```
+> ⚠️ **Quy ước nhánh**: Mỗi chức năng làm trên **một nhánh riêng** tách từ `main`, định dạng: `2312770-LNTien-<Ten-Chuc-Nang>`. Sau khi code xong và test không lỗi, bạn merge nhánh đó vào `main`.
 
 ---
 
 ### Chức năng 1: Tạo công thức mới (FR-RCP-003)
 
-#### Bước 1: Chuyển sang nhánh cá nhân của bạn
+#### Bước 1: Tạo nhánh mới từ `main`
 ```powershell
-git checkout 2312770-LeNhatTien
+git checkout main
+git pull origin main
+git checkout -b 2312770-LNTien-Tao-Cong-Thuc
 ```
 
 #### Bước 2: Hiện thực Backend
@@ -86,23 +75,26 @@ git checkout 2312770-LeNhatTien
 2. Form gồm: Tiêu đề, Mô tả, Hướng dẫn chung, Danh mục (dropdown lấy từ `categoriesApi.getAll()`), Thời gian chuẩn bị, Thời gian nấu, Khẩu phần, Độ khó.
 3. Nút bấm "Lưu bản nháp" gửi request `POST /api/v1/recipes`.
 
-#### Bước 4: Commit và push
+#### Bước 4: Kiểm tra và đẩy nhánh lên GitHub
 ```powershell
 dotnet build CulinaryBlog.slnx
 cd src\Frontend; npm run lint; cd ..\..
 
 git add .
 git commit -m "recipe: hien thuc FR-RCP-003 tao cong thuc moi"
-git push origin 2312770-LeNhatTien
+git push -u origin 2312770-LNTien-Tao-Cong-Thuc
 ```
+Sau đó bạn merge nhánh `2312770-LNTien-Tao-Cong-Thuc` vào `main`.
 
 ---
 
 ### Chức năng 2: Xem chi tiết danh mục kèm công thức (FR-CAT-002)
 
-#### Bước 1: Tiếp tục trên nhánh cá nhân
+#### Bước 1: Tạo nhánh mới từ `main`
 ```powershell
-git checkout 2312770-LeNhatTien
+git checkout main
+git pull origin main
+git checkout -b 2312770-LNTien-Chi-Tiet-Danh-Muc
 ```
 
 #### Bước 2: Hiện thực Backend & Frontend
@@ -111,12 +103,13 @@ git checkout 2312770-LeNhatTien
    - Lấy danh sách recipes thuộc category đó (`Status == Published`).
 2. Frontend: Tạo trang `src/Frontend/app/(public)/categories/[slug]/page.tsx` hiển thị banner danh mục và danh sách `RecipeCard` tương ứng.
 
-#### Bước 3: Commit và push
+#### Bước 3: Kiểm tra, commit và đẩy lên GitHub
 ```powershell
 git add .
 git commit -m "category: hien thuc FR-CAT-002 xem chi tiet danh muc"
-git push origin 2312770-LeNhatTien
+git push -u origin 2312770-LNTien-Chi-Tiet-Danh-Muc
 ```
+Sau đó bạn merge nhánh `2312770-LNTien-Chi-Tiet-Danh-Muc` vào `main`.
 
 ---
 
@@ -124,5 +117,6 @@ git push origin 2312770-LeNhatTien
 - [ ] Backend biên dịch không lỗi (`dotnet build CulinaryBlog.slnx`).
 - [ ] Frontend không lỗi lint và TypeScript (`npm run lint` & `npx tsc --noEmit`).
 - [ ] Test trực tiếp API trên Scalar: `http://localhost:5000/scalar/v1` hoạt động chính xác.
-- [ ] Nhánh cá nhân `2312770-LeNhatTien` đã được đẩy lên GitHub.
+- [ ] Các nhánh chức năng đã được đẩy lên GitHub và merge vào `main`.
+
 

@@ -10,18 +10,16 @@ Web chia sẻ công thức nấu ăn chuẩn vị Việt Nam. Backend .NET 10 (C
 
 > 📖 **Bắt buộc đọc trước khi code**: file [docs/thanh-vien/](./docs/thanh-vien/) của bạn + [docs/DECISIONS.md](./docs/DECISIONS.md)
 
-Mỗi thành viên làm việc trên **nhánh Git cá nhân riêng** của mình (xem mục [Quy tắc nhánh Git](#quy-tắc-nhánh-git--quy-trình-làm-việc) bên dưới). Sau khi hoàn thành, đẩy lên GitHub để **trưởng nhóm Tiến review và merge vào `main`**.
+Mỗi chức năng làm trên **một nhánh riêng biệt** (xem mục [Quy tắc nhánh Git](#quy-tắc-nhánh-git--quy-trình-làm-việc) bên dưới). Sau khi làm xong mỗi chức năng, thành viên đẩy nhánh đó lên GitHub và báo **trưởng nhóm Tiến** review và merge vào `main`.
 
 ### 1. Lê Nhật Tiến (MSSV: 2312770 — Trưởng nhóm)
 
-**Nhánh làm việc:** `2312770-LeNhatTien`
-
-| # | Chức năng | Mã FR | Backend cần làm | Frontend cần làm |
-| :---: | :--- | :---: | :--- | :--- |
-| ✅ | Dựng hạ tầng & Database | — | Migration DB, DatabaseSeeder (2 users, 6 danh mục, 6 công thức mẫu chuẩn dữ liệu Việt) | — |
-| ✅ | Layout chung & Trang chủ | — | `GetCategoriesQueryHandler`, `GetRecipesQueryHandler`, `GetRecipeBySlugQueryHandler` | `Navbar.tsx`, `Footer.tsx`, `RecipeCard.tsx`, `app/page.tsx` (Hero, Category filter, Recipe grid) |
-| 🔲 | Tạo công thức mới (Draft) | `FR-RCP-003` | `CreateRecipeCommandHandler` + Validator | Form tạo công thức `/recipes/create`: Tiêu đề, Mô tả, Danh mục, Thời gian, Khẩu phần, Độ khó |
-| 🔲 | Xem chi tiết danh mục | `FR-CAT-002` | `GetCategoryBySlugQueryHandler` | Trang `/categories/[slug]`: Banner danh mục + lưới RecipeCard |
+| # | Chức năng | Mã FR | Tên nhánh | Backend cần làm | Frontend cần làm |
+| :---: | :--- | :---: | :--- | :--- | :--- |
+| ✅ | Dựng hạ tầng & Database | — | `main` | Migration DB, DatabaseSeeder (2 users, 6 danh mục, 6 công thức mẫu chuẩn dữ liệu Việt) | — |
+| ✅ | Layout chung & Trang chủ | — | `main` | `GetCategoriesQueryHandler`, `GetRecipesQueryHandler`, `GetRecipeBySlugQueryHandler` | `Navbar.tsx`, `Footer.tsx`, `RecipeCard.tsx`, `app/page.tsx` (Hero, Category filter, Recipe grid) |
+| 🔲 | Tạo công thức mới (Draft) | `FR-RCP-003` | `2312770-LNTien-Tao-Cong-Thuc` | `CreateRecipeCommandHandler` + Validator | Form tạo công thức `/recipes/create`: Tiêu đề, Mô tả, Danh mục, Thời gian, Khẩu phần, Độ khó |
+| 🔲 | Xem chi tiết danh mục | `FR-CAT-002` | `2312770-LNTien-Chi-Tiet-Danh-Muc` | `GetCategoryBySlugQueryHandler` | Trang `/categories/[slug]`: Banner danh mục + lưới RecipeCard |
 
 📘 **Xem hướng dẫn chi tiết**: [docs/thanh-vien/2312770_LeNhatTien.md](./docs/thanh-vien/2312770_LeNhatTien.md)
 
@@ -29,12 +27,10 @@ Mỗi thành viên làm việc trên **nhánh Git cá nhân riêng** của mình
 
 ### 2. Lâm Văn Đức (MSSV: 2314299)
 
-**Nhánh làm việc:** `2314299-LamVanDuc`
-
-| # | Chức năng | Mã FR | Backend cần làm | Frontend cần làm |
-| :---: | :--- | :---: | :--- | :--- |
-| 🔲 | Đăng ký tài khoản | `FR-AUTH-001` | `RegisterCommandHandler` + Validator (email hợp lệ, mật khẩu ≥ 8 ký tự), gán role Author, sinh JWT | Trang `/register`: Form Email, Tên hiển thị, Tên đăng nhập (tùy chọn), Mật khẩu, Xác nhận mật khẩu |
-| 🔲 | Đăng nhập Email/Mật khẩu | `FR-AUTH-002` | `LoginCommandHandler` (kiểm tra mật khẩu, sinh Access + Refresh Token, xử lý lockout 5 lần sai) | Trang `/login`: Form Email, Mật khẩu, nút Đăng nhập; lưu token vào cookie và cập nhật Navbar |
+| # | Chức năng | Mã FR | Tên nhánh | Backend cần làm | Frontend cần làm |
+| :---: | :--- | :---: | :--- | :--- | :--- |
+| 🔲 | Đăng ký tài khoản | `FR-AUTH-001` | `2314299-LVDuc-Dang-Ky` | `RegisterCommandHandler` + Validator (email hợp lệ, mật khẩu ≥ 8 ký tự), gán role Author, sinh JWT | Trang `/register`: Form Email, Tên hiển thị, Tên đăng nhập (tùy chọn), Mật khẩu, Xác nhận mật khẩu |
+| 🔲 | Đăng nhập Email/Mật khẩu | `FR-AUTH-002` | `2314299-LVDuc-Dang-Nhap` | `LoginCommandHandler` (kiểm tra mật khẩu, sinh Access + Refresh Token, xử lý lockout 5 lần sai) | Trang `/login`: Form Email, Mật khẩu, nút Đăng nhập; lưu token vào cookie và cập nhật Navbar |
 
 📘 **Xem hướng dẫn chi tiết**: [docs/thanh-vien/2314299_LamVanDuc.md](./docs/thanh-vien/2314299_LamVanDuc.md)
 
@@ -42,12 +38,10 @@ Mỗi thành viên làm việc trên **nhánh Git cá nhân riêng** của mình
 
 ### 3. Nguyễn Viết Toàn (MSSV: 2312777)
 
-**Nhánh làm việc:** `2312777-NguyenVietToan`
-
-| # | Chức năng | Mã FR | Backend cần làm | Frontend cần làm |
-| :---: | :--- | :---: | :--- | :--- |
-| 🔲 | Danh sách danh mục | `FR-CAT-001` | Kiểm tra & bổ sung comment cho `GetCategoriesQueryHandler` (đã có khung mẫu) | Trang `/categories`: Lưới card danh mục với hình ảnh đại diện, mô tả và đếm số bài viết |
-| 🔲 | Admin tạo danh mục | `FR-CAT-003` | `CreateCategoryCommandHandler` (kiểm tra tên trùng, tự sinh slug, lưu DB) | Trang admin `/admin/categories`: Bảng danh mục + Form nhập tên, mô tả, ảnh, thứ tự OrderIndex |
+| # | Chức năng | Mã FR | Tên nhánh | Backend cần làm | Frontend cần làm |
+| :---: | :--- | :---: | :--- | :--- | :--- |
+| 🔲 | Danh sách danh mục | `FR-CAT-001` | `2312777-NVToan-Danh-Sach-Danh-Muc` | Kiểm tra & bổ sung comment cho `GetCategoriesQueryHandler` (đã có khung mẫu) | Trang `/categories`: Lưới card danh mục với hình ảnh đại diện, mô tả và đếm số bài viết |
+| 🔲 | Admin tạo danh mục | `FR-CAT-003` | `2312777-NVToan-Tao-Danh-Muc` | `CreateCategoryCommandHandler` (kiểm tra tên trùng, tự sinh slug, lưu DB) | Trang admin `/admin/categories`: Bảng danh mục + Form nhập tên, mô tả, ảnh, thứ tự OrderIndex |
 
 📘 **Xem hướng dẫn chi tiết**: [docs/thanh-vien/2312777_NguyenVietToan.md](./docs/thanh-vien/2312777_NguyenVietToan.md)
 
@@ -55,12 +49,10 @@ Mỗi thành viên làm việc trên **nhánh Git cá nhân riêng** của mình
 
 ### 4. Nguyễn Đình Tuấn (MSSV: 2312792)
 
-**Nhánh làm việc:** `2312792-NguyenDinhTuan`
-
-| # | Chức năng | Mã FR | Backend cần làm | Frontend cần làm |
-| :---: | :--- | :---: | :--- | :--- |
-| 🔲 | Upload ảnh lên MinIO | `FR-FILE-001` | `MinioStorageService.UploadAsync()`: Validate ≤ 5MB, chỉ JPG/PNG/WebP, sinh tên file UUID, upload vào bucket `culinary-blog` | Component `ImageUploader.tsx`: Kéo thả hoặc click chọn ảnh, preview ảnh sau upload, hiển thị URL |
-| 🔲 | Xóa ảnh trên MinIO | `FR-FILE-002` | `MinioStorageService.DeleteAsync()`: Phân tích object key từ URL, gọi MinIO RemoveObject | Nút xóa (icon thùng rác / dấu ×) trên ảnh preview, xác nhận trước khi xóa |
+| # | Chức năng | Mã FR | Tên nhánh | Backend cần làm | Frontend cần làm |
+| :---: | :--- | :---: | :--- | :--- | :--- |
+| 🔲 | Upload ảnh lên MinIO | `FR-FILE-001` | `2312792-NDTuan-Upload-Minio` | `MinioStorageService.UploadAsync()`: Validate ≤ 5MB, chỉ JPG/PNG/WebP, sinh tên file UUID, upload vào bucket `culinary-blog` | Component `ImageUploader.tsx`: Kéo thả hoặc click chọn ảnh, preview ảnh sau upload, hiển thị URL |
+| 🔲 | Xóa ảnh trên MinIO | `FR-FILE-002` | `2312792-NDTuan-Xoa-Anh-Minio` | `MinioStorageService.DeleteAsync()`: Phân tích object key từ URL, gọi MinIO RemoveObject | Nút xóa (icon thùng rác / dấu ×) trên ảnh preview, xác nhận trước khi xóa |
 
 📘 **Xem hướng dẫn chi tiết**: [docs/thanh-vien/2312792_NguyenDinhTuan.md](./docs/thanh-vien/2312792_NguyenDinhTuan.md)
 
@@ -83,47 +75,49 @@ Toàn bộ 28 chức năng chia đều cho 4 thành viên — **đúng 7 chức 
 
 > ⚠️ **Quan trọng**: Thành viên **KHÔNG tự merge vào `main`**. Chỉ có trưởng nhóm **Lê Nhật Tiến (2312770)** mới được merge sau khi review code và xác nhận không xung đột.
 
-### Quy ước tên nhánh
+### Quy ước tên nhánh theo từng chức năng
 
-Mỗi thành viên có **một nhánh cá nhân cố định** để làm việc trong suốt dự án, đặt theo cú pháp:
+Mỗi chức năng (FR) được làm trên **một nhánh riêng biệt**, tự tạo từ nhánh `main` theo cú pháp:
 
 ```
-<MSSV>-<HoTenKhongDau>
+<MSSV>-<VietTatHoDemTen>-<Ten-Chuc-Nang>
 ```
 
-| Thành viên | Nhánh cá nhân |
-| :--- | :--- |
-| Lê Nhật Tiến (Trưởng nhóm) | `2312770-LeNhatTien` |
-| Lâm Văn Đức | `2314299-LamVanDuc` |
-| Nguyễn Viết Toàn | `2312777-NguyenVietToan` |
-| Nguyễn Đình Tuấn | `2312792-NguyenDinhTuan` |
+| Thành viên | Cú pháp tiền tố | Ví dụ nhánh chức năng |
+| :--- | :--- | :--- |
+| Lê Nhật Tiến (Trưởng nhóm) | `2312770-LNTien-` | `2312770-LNTien-Tao-Cong-Thuc`, `2312770-LNTien-Chi-Tiet-Danh-Muc` |
+| Lâm Văn Đức | `2314299-LVDuc-` | `2314299-LVDuc-Dang-Ky`, `2314299-LVDuc-Dang-Nhap` |
+| Nguyễn Viết Toàn | `2312777-NVToan-` | `2312777-NVToan-Danh-Sach-Danh-Muc`, `2312777-NVToan-Tao-Danh-Muc` |
+| Nguyễn Đình Tuấn | `2312792-NDTuan-` | `2312792-NDTuan-Upload-Minio`, `2312792-NDTuan-Xoa-Anh-Minio` |
 
-### Quy trình làm việc hàng ngày
+### Quy trình làm việc cho từng chức năng
 
 ```powershell
-# 1. Chuyển về nhánh cá nhân của bạn (chỉ làm lần đầu nếu chưa có)
-git checkout -b 2314299-LamVanDuc   # Thay bằng tên nhánh của bạn
-# Hoặc nếu nhánh đã có:
-git checkout 2314299-LamVanDuc
+# 1. Luôn cập nhật code mới nhất từ main trước khi tạo nhánh mới
+git checkout main
+git pull origin main
 
-# 2. Kéo code mới nhất từ main về trước khi code (tránh xung đột)
-git fetch origin
-git merge origin/main
+# 2. Tự tạo nhánh mới cho chức năng bạn sắp làm
+# Ví dụ Tuấn làm upload MinIO:
+git checkout -b 2312792-NDTuan-Upload-Minio
 
 # 3. Code chức năng của bạn...
 
-# 4. Kiểm tra trước khi đẩy
+# 4. Kiểm tra trước khi đẩy (bắt buộc 0 lỗi)
 dotnet build CulinaryBlog.slnx     # 0 lỗi
 npm run lint                        # 0 lỗi (chạy trong src/Frontend)
 
-# 5. Commit theo chuẩn: <module>: <mô tả ngắn> FR-XXX-XXX
+# 5. Commit theo chuẩn: <module>: <mô tả ngắn> <mã FR>
 git add .
-git commit -m "auth: hien thuc dang ky tai khoan FR-AUTH-001"
+git commit -m "file: upload anh len minio 5mb FR-FILE-001"
 
-# 6. Đẩy nhánh cá nhân lên GitHub
-git push -u origin 2314299-LamVanDuc
+# 6. Đẩy nhánh chức năng lên GitHub
+git push -u origin 2312792-NDTuan-Upload-Minio
 
-# 7. Báo trưởng nhóm (Tiến) qua nhóm Zalo để review và merge vào main
+# 7. Báo trưởng nhóm Tiến qua Zalo để Tiến review và merge vào main
+# Sau khi Tiến merge xong, chuyển lại về main để pull về làm chức năng tiếp theo:
+git checkout main
+git pull origin main
 ```
 
 ### Quy ước commit message
@@ -137,6 +131,7 @@ Ví dụ:
   category: them api danh sach danh muc voi recipe count FR-CAT-001
   file: upload anh len minio 5mb validate FR-FILE-001
 ```
+
 
 ---
 

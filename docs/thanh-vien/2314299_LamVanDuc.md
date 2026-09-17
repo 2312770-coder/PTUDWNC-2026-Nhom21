@@ -40,30 +40,21 @@ Tuần 7: Kiểm thử toàn diện luồng Auth, phân quyền Guard trên UI &
 
 ---
 
+---
+
 ## 4. HƯỚNG DẪN CHI TIẾT TUẦN 2 (TUẦN NÀY BẮT ĐẦU LÀM)
 
-> ⚠️ **Git**: Bạn làm việc trên **nhánh cá nhân** `2314299-LamVanDuc`. **Không tự merge vào `main`** — 
-
-### Thiết lập nhánh cá nhân (lần đầu)
-```powershell
-git checkout -b 2314299-LamVanDuc
-git push -u origin 2314299-LamVanDuc
-```
-*Từ những lần sau chỉ cần:* `git checkout 2314299-LamVanDuc`
-
-### Trước khi code mỗi ngày — đồng bộ với `main`
-```powershell
-git fetch origin
-git merge origin/main
-```
+> ⚠️ **Quy ước nhánh**: Mỗi chức năng làm trên **một nhánh riêng** tự tạo từ `main`, cú pháp: `2314299-LVDuc-<Ten-Chuc-Nang>`. **Không tự merge vào `main`** — báo trưởng nhóm Tiến để Tiến review và merge giúp.
 
 ---
 
 ### Chức năng 1: Đăng ký tài khoản (FR-AUTH-001)
 
-#### Bước 1: Chuyển sang nhánh cá nhân của bạn
+#### Bước 1: Tạo nhánh mới từ `main`
 ```powershell
-git checkout 2314299-LamVanDuc
+git checkout main
+git pull origin main
+git checkout -b 2314299-LVDuc-Dang-Ky
 ```
 
 #### Bước 2: Hiện thực Backend
@@ -82,24 +73,26 @@ git checkout 2314299-LamVanDuc
 2. Dựng form đăng ký: Email, Tên hiển thị, Tên đăng nhập (tùy chọn), Mật khẩu, Xác nhận mật khẩu.
 3. Khi submit, gọi `POST /api/v1/auth/register`, nếu thành công lưu token và chuyển hướng về trang chủ.
 
-#### Bước 4: Commit và push
+#### Bước 4: Kiểm tra và đẩy nhánh lên GitHub
 ```powershell
 dotnet build CulinaryBlog.slnx
 cd src\Frontend; npm run lint; cd ..\..
 
 git add .
 git commit -m "auth: hien thuc FR-AUTH-001 dang ky tai khoan"
-git push origin 2314299-LamVanDuc
+git push -u origin 2314299-LVDuc-Dang-Ky
 ```
-
+Nhắn trưởng nhóm Tiến qua Zalo để Tiến review và merge vào `main`.
 
 ---
 
 ### Chức năng 2: Đăng nhập bằng Email/Mật khẩu (FR-AUTH-002)
 
-#### Bước 1: Tiếp tục trên nhánh cá nhân
+#### Bước 1: Tạo nhánh mới từ `main` (sau khi chức năng 1 đã xong)
 ```powershell
-git checkout 2314299-LamVanDuc
+git checkout main
+git pull origin main
+git checkout -b 2314299-LVDuc-Dang-Nhap
 ```
 
 #### Bước 2: Hiện thực Backend & Frontend
@@ -112,12 +105,16 @@ git checkout 2314299-LamVanDuc
    - Xử lý submit lưu Access Token vào cookie/localStorage.
    - Cập nhật trạng thái Navbar (hiện avatar thay vì nút Đăng nhập khi đã đăng nhập thành công).
 
-#### Bước 3: Commit và push
+#### Bước 3: Kiểm tra và đẩy nhánh lên GitHub
 ```powershell
+dotnet build CulinaryBlog.slnx
+cd src\Frontend; npm run lint; cd ..\..
+
 git add .
 git commit -m "auth: hien thuc FR-AUTH-002 dang nhap email"
-git push origin 2314299-LamVanDuc
+git push -u origin 2314299-LVDuc-Dang-Nhap
 ```
+Nhắn trưởng nhóm Tiến qua Zalo để Tiến review và merge vào `main`.
 
 ---
 
@@ -125,6 +122,7 @@ git push origin 2314299-LamVanDuc
 - [ ] Đăng ký tài khoản mới thành công (thử trên Scalar `http://localhost:5000/scalar/v1` hoặc giao diện web).
 - [ ] Đăng nhập đúng mật khẩu trả về Access Token + Refresh Token; sai mật khẩu trả về lỗi 401 rõ ràng.
 - [ ] Navbar hiển thị đúng trạng thái trước và sau khi đăng nhập.
-- [ ] Nhánh cá nhân `2314299-LamVanDuc` đã được đẩy lên GitHub.
+- [ ] Các nhánh chức năng `2314299-LVDuc-Dang-Ky` và `2314299-LVDuc-Dang-Nhap` đã được đẩy lên GitHub.
 - [ ] Backend và Frontend không có lỗi build/lint.
+
 
