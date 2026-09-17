@@ -42,7 +42,7 @@ Tuần 7: Kiểm thử UI Admin Category & Search, tối ưu truy vấn, hoàn t
 
 ## 4. HƯỚNG DẪN CHI TIẾT TUẦN 2 (TUẦN NÀY BẮT ĐẦU LÀM)
 
-> ⚠️ **Git**: Bạn làm việc trên **nhánh cá nhân** `2312777-NguyenVietToan`. **Không tự merge vào `main`** — báo anh Tiến để anh review và merge giúp.
+> ⚠️ **Git**: Bạn làm việc trên **nhánh cá nhân** `2312777-NguyenVietToan`. **Không tự merge vào `main`** 
 
 ### Thiết lập nhánh cá nhân (lần đầu)
 ```powershell
