@@ -42,7 +42,7 @@ Tuần 7: Kiểm thử tổng thể MinIO bucket, luồng hồ sơ cá nhân, ho
 
 ## 4. HƯỚNG DẪN CHI TIẾT TUẦN 2 (TUẦN NÀY BẮT ĐẦU LÀM)
 
-> ⚠️ **Git**: Bạn làm việc trên **nhánh cá nhân** `2312792-NguyenDinhTuan`. **Không tự merge vào `main`** — báo anh Tiến để anh review và merge giúp.
+> ⚠️ **Git**: Bạn làm việc trên **nhánh cá nhân** `2312792-NguyenDinhTuan`. **Không tự merge vào `main`**
 
 ### Thiết lập nhánh cá nhân (lần đầu)
 ```powershell
@@ -89,7 +89,7 @@ git add .
 git commit -m "file: hien thuc FR-FILE-001 upload anh len minio"
 git push origin 2312792-NguyenDinhTuan
 ```
-Nhắn anh Tiến qua Zalo để anh review và merge vào `main`.
+
 
 ---
 
@@ -112,7 +112,7 @@ git add .
 git commit -m "file: hien thuc FR-FILE-002 xoa anh minio"
 git push origin 2312792-NguyenDinhTuan
 ```
-Nhắn anh Tiến để merge vào `main`.
+
 
 ---
 
