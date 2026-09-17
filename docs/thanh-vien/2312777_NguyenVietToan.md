@@ -79,7 +79,6 @@ git add .
 git commit -m "category: hien thuc FR-CAT-001 danh sach danh muc"
 git push origin 2312777-NguyenVietToan
 ```
-Nhắn anh Tiến qua Zalo để anh review và merge vào `main`.
 
 ---
 
@@ -104,7 +103,6 @@ git add .
 git commit -m "category: hien thuc FR-CAT-003 tao danh muc moi"
 git push origin 2312777-NguyenVietToan
 ```
-Nhắn anh Tiến để merge vào `main`.
 
 ---
 
