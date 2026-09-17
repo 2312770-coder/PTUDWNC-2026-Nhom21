@@ -59,6 +59,7 @@ app.MapAuthEndpoints();        // FR-AUTH (SRS mục 8.1)
 app.MapCategoriesEndpoints();  // FR-CAT  (SRS mục 8.2)
 app.MapRecipesEndpoints();     // FR-RCP + FR-SRCH (SRS mục 8.3 - 8.6)
 app.MapHealthEndpoints();      // FR-OBS-001 (SRS mục 8.7)
+app.MapFilesEndpoints();       // FR-FILE-001 + FR-FILE-002 (Upload/Delete MinIO)
 
 // TODO (người phụ trách FR-JOB): map dashboard Hangfire tại /hangfire,
 // chỉ cho role Admin truy cập. Xem Infrastructure/Jobs/README_JOBS.md.

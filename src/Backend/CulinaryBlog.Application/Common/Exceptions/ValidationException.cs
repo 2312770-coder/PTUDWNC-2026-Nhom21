@@ -12,4 +12,7 @@ public class ValidationException : Exception
 
     public ValidationException(IDictionary<string, string[]> errors) : this()
         => Errors = errors;
+
+    public ValidationException(string field, string message) : this()
+        => Errors = new Dictionary<string, string[]> { [field] = [message] };
 }
