@@ -147,7 +147,7 @@ git push origin 2314299-LamVanDuc    # Thay bằng tên nhánh của bạn
 ```
 
 #### Bước 6: Báo trưởng nhóm review và merge
-1. Nhắn vào nhóm Zalo/Discord: *"Mình vừa push xong FR-AUTH-001 lên nhánh `2314299-LamVanDuc`, anh Tiến review giúp nhé."*
+1. Nhắn vào nhóm Zalo/Discord: *"Mình vừa push xong FR-AUTH-001 lên nhánh `2314299-LamVanDuc`
 2. Trưởng nhóm **Tiến** vào GitHub, so sánh nhánh của bạn với `main`, review code, và nếu ổn sẽ **merge vào `main`** thay bạn.
 
 ---
