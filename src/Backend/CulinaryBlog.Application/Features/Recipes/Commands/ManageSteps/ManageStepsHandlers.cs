@@ -8,9 +8,10 @@ namespace CulinaryBlog.Application.Features.Recipes.Commands.ManageSteps;
 // FR-RCP-010 - CHƯA HIỆN THỰC.
 //
 // Điểm cần chú ý nhất: StepNumber là composite unique cùng RecipeId (SRS mục 7.3).
-// Nghĩa là khi CHÈN một bước vào giữa, hoặc XÓA một bước, phải đánh số lại các
-// bước phía sau cho liền mạch 1,2,3... (dùng RecipeStep.Renumber đã viết sẵn),
-// nếu không sẽ vi phạm ràng buộc unique hoặc bị nhảy số.
+// - Nếu client không truyền StepNumber (null): Tự động gán = Max(s => s.StepNumber) + 1 (hoặc 1 nếu chưa có bước nào).
+// - Khi CHÈN một bước vào giữa (client có truyền StepNumber), hoặc XÓA một bước:
+//   phải đánh số lại các bước phía sau cho liền mạch 1,2,3... (dùng RecipeStep.Renumber đã viết sẵn),
+//   nếu không sẽ vi phạm ràng buộc unique hoặc bị nhảy số.
 public class AddStepCommandHandler : IRequestHandler<AddStepCommand, RecipeStepDto>
 {
     private readonly IRecipeRepository _recipeRepository;

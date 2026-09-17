@@ -10,11 +10,11 @@ namespace CulinaryBlog.Application.Features.Recipes.Commands.ManageSteps;
 
 public record AddStepCommand(
     Guid RecipeId,
-    int StepNumber,
     string Title,
     string Description,
-    int? TimerMinutes,
-    string? ImageUrl
+    int? StepNumber = null,
+    int? TimerMinutes = null,
+    string? ImageUrl = null
 ) : IRequest<RecipeStepDto>;
 
 public record UpdateStepCommand(

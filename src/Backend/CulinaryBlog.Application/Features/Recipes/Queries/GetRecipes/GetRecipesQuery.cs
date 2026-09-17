@@ -13,5 +13,6 @@ public record GetRecipesQuery(
     PagingParams Paging,
     Guid? CategoryId = null,
     RecipeDifficulty? Difficulty = null,
-    int? MaxTotalTime = null   // lọc theo tổng thời gian nấu (PrepTime + CookTime)
+    int? MaxCookTime = null,    // lọc theo thời gian nấu (CookTime)
+    int? MaxTotalTime = null   // lọc theo tổng thời gian (PrepTime + CookTime)
 ) : IRequest<PagedResult<RecipeListItemDto>>;

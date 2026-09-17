@@ -12,28 +12,15 @@ Làm tuần tự từ trên xuống. Các lệnh viết cho **PowerShell** trên
 Nếu máy đã cài sẵn PostgreSQL bản desktop, nhớ **tắt service đó đi** (hoặc gỡ),
 vì nó chiếm cổng 5432 làm container Docker không kết nối được.
 
-## 1. Tạo file solution
+## 1. Build Backend
 
-Các file `.csproj` đã có sẵn, chỉ cần tạo `.sln` và gán 4 project vào:
-
-```powershell
-dotnet new sln -n CulinaryBlog
-
-dotnet sln add src\Backend\CulinaryBlog.Domain\CulinaryBlog.Domain.csproj
-dotnet sln add src\Backend\CulinaryBlog.Application\CulinaryBlog.Application.csproj
-dotnet sln add src\Backend\CulinaryBlog.Infrastructure\CulinaryBlog.Infrastructure.csproj
-dotnet sln add src\Backend\CulinaryBlog.API\CulinaryBlog.API.csproj
-```
-
-Tham chiếu giữa các tầng đã khai báo sẵn trong từng `.csproj`, không cần
-`dotnet add reference`.
-
-## 2. Restore và build
+Dự án đã có sẵn file solution `CulinaryBlog.slnx` ở thư mục gốc (chứa đủ 4 project Backend). Bạn chỉ cần restore và build:
 
 ```powershell
-dotnet restore
-dotnet build
+dotnet restore CulinaryBlog.slnx
+dotnet build CulinaryBlog.slnx
 ```
+
 
 Nếu báo lỗi version package không tồn tại: mở `.csproj` tương ứng, chạy
 `dotnet add package <TênGói>` để dotnet tự lấy bản mới nhất.
@@ -135,24 +122,28 @@ Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 
 ## 8. Quy trình làm việc với Git
 
-Mỗi thành viên tạo nhánh riêng cho từng chức năng, tách từ `develop`:
+Mỗi thành viên làm việc trên **nhánh cá nhân riêng** của mình (cú pháp: `<MSSV>-<HoTenKhongDau>`).
+**Không tự merge vào `main`** — chỉ trưởng nhóm **Lê Nhật Tiến** mới được merge.
 
 ```powershell
-git checkout develop
-git pull
-git checkout -b 2312770-LeNhatTien-Tao_Cong_Thuc_Moi
-```
+# Lần đầu: tạo nhánh cá nhân và đẩy lên GitHub
+git checkout -b 2314299-LamVanDuc    # Thay bằng tên nhánh của bạn
+git push -u origin 2314299-LamVanDuc
 
-Code xong thì:
+# Mỗi ngày trước khi code: đồng bộ với main mới nhất
+git checkout 2314299-LamVanDuc
+git fetch origin
+git merge origin/main
 
-```powershell
+# Code xong thì commit và push
 git add .
-git commit -m "recipe: hien thuc FR-RCP-003 tao cong thuc moi"
-git push -u origin 2312770-LeNhatTien-Tao_Cong_Thuc_Moi
+git commit -m "auth: hien thuc dang ky tai khoan FR-AUTH-001"
+git push origin 2314299-LamVanDuc
 ```
 
-Rồi vào GitHub mở Pull Request vào nhánh `develop`, nhờ một bạn khác review.
-Chỉ merge khi không còn xung đột và build chạy được.
+Sau khi push xong, **báo anh Tiến qua nhóm Zalo** để anh review và merge vào `main`.
+
+
 
 ## 9. Bắt đầu code từ đâu
 

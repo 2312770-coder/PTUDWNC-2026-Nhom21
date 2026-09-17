@@ -30,12 +30,13 @@ public static class RecipesEndpoints
             [AsParameters] PagingParams paging,
             Guid? categoryId,
             RecipeDifficulty? difficulty,
+            int? maxCookTime,
             int? maxTotalTime,
             ISender sender,
             CancellationToken ct) =>
         {
             var result = await sender.Send(
-                new GetRecipesQuery(paging, categoryId, difficulty, maxTotalTime), ct);
+                new GetRecipesQuery(paging, categoryId, difficulty, maxCookTime, maxTotalTime), ct);
             return Results.Ok(ApiResponse.FromPaged(result));
         })
         .WithName("GetRecipes")

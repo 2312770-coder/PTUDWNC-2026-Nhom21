@@ -32,13 +32,9 @@ if (app.Environment.IsDevelopment())
     var db = scope.ServiceProvider.GetRequiredService<CulinaryBlogDbContext>();
     await db.Database.MigrateAsync();
 
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    foreach (var role in new[] { "Admin", "Author" })
-    {
-        if (!await roleManager.RoleExistsAsync(role))
-            await roleManager.CreateAsync(new IdentityRole(role));
-    }
+    await DatabaseSeeder.SeedAsync(app.Services);
 }
+
 
 // ── Middleware pipeline - THỨ TỰ RẤT QUAN TRỌNG, đừng đảo lộn ─────────────
 app.UseExceptionHandler();

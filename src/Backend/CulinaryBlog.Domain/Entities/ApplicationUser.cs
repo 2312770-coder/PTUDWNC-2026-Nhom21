@@ -17,11 +17,11 @@ public class ApplicationUser : IdentityUser
     public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 
     // Dùng cho đăng ký thông thường (FR-AUTH-001).
-    public static ApplicationUser Create(string email, string displayName)
+    public static ApplicationUser Create(string email, string displayName, string? userName = null)
         => new()
         {
             Email = email,
-            UserName = email, // SRS mục 8.1: đăng ký chỉ cần email + password + displayName
+            UserName = !string.IsNullOrWhiteSpace(userName) ? userName.Trim() : email,
             DisplayName = displayName,
         };
 

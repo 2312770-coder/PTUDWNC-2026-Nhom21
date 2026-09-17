@@ -32,10 +32,10 @@ public class Category : BaseEntity
 
     public void Update(string? name, string? description, string? imageUrl, int? orderIndex)
     {
+        // FR-CAT-004: Slug KHÔNG thay đổi khi đổi tên để tránh vỡ link SEO.
         if (!string.IsNullOrWhiteSpace(name))
         {
             Name = name.Trim();
-            Slug = SlugVO.Create(name); // đổi tên thì sinh lại slug
         }
         Description = description ?? Description;
         ImageUrl = imageUrl ?? ImageUrl;

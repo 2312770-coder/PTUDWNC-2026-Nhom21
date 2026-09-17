@@ -2,26 +2,141 @@
 
 Đồ án môn Phát triển Ứng dụng Web Nâng cao — Nhóm 21
 
-Web chia sẻ công thức nấu ăn. Backend .NET 10 (Clean Architecture) và frontend
-Next.js là hai ứng dụng tách rời, nói chuyện với nhau qua REST API. Toàn bộ
-yêu cầu lấy từ tài liệu SRS v1.0.0 trong thư mục `docs/`.
-
-- Mã dự án: CULINARY-BLOG-V1
-- Phiên bản đặc tả: 1.0.0
+Web chia sẻ công thức nấu ăn chuẩn vị Việt Nam. Backend .NET 10 (Clean Architecture) và Frontend Next.js 15 (App Router) là hai ứng dụng tách rời, giao tiếp qua REST API. Toàn bộ yêu cầu và quyết định kỹ thuật lấy từ [SRS v1.0.0](./docs/SRS_Culinary_Blog_v1.0.0.md) và [DECISIONS.md](./docs/DECISIONS.md).
 
 ---
 
-## Mục lục
+## Kế hoạch chi tiết TUẦN 2
 
-- [Sơ đồ hệ thống](#sơ-đồ-hệ-thống)
-- [Công nghệ](#công-nghệ)
-- [Ba loại tài khoản](#ba-loại-tài-khoản)
-- [Cấu trúc thư mục](#cấu-trúc-thư-mục)
-- [Phân công công việc](#phân-công-công-việc)
-- [Quy tắc nhánh Git](#quy-tắc-nhánh-git)
-- [Chạy dự án](#chạy-dự-án)
-- [Tài liệu đi kèm](#tài-liệu-đi-kèm)
-- [Thành viên nhóm](#thành-viên-nhóm)
+> 📖 **Bắt buộc đọc trước khi code**: file [docs/thanh-vien/](./docs/thanh-vien/) của bạn + [docs/DECISIONS.md](./docs/DECISIONS.md)
+
+Mỗi thành viên làm việc trên **nhánh Git cá nhân riêng** của mình (xem mục [Quy tắc nhánh Git](#quy-tắc-nhánh-git--quy-trình-làm-việc) bên dưới). Sau khi hoàn thành, đẩy lên GitHub để **trưởng nhóm Tiến review và merge vào `main`**.
+
+### 1. Lê Nhật Tiến (MSSV: 2312770 — Trưởng nhóm)
+
+**Nhánh làm việc:** `2312770-LeNhatTien`
+
+| # | Chức năng | Mã FR | Backend cần làm | Frontend cần làm |
+| :---: | :--- | :---: | :--- | :--- |
+| ✅ | Dựng hạ tầng & Database | — | Migration DB, DatabaseSeeder (2 users, 6 danh mục, 6 công thức mẫu chuẩn dữ liệu Việt) | — |
+| ✅ | Layout chung & Trang chủ | — | `GetCategoriesQueryHandler`, `GetRecipesQueryHandler`, `GetRecipeBySlugQueryHandler` | `Navbar.tsx`, `Footer.tsx`, `RecipeCard.tsx`, `app/page.tsx` (Hero, Category filter, Recipe grid) |
+| 🔲 | Tạo công thức mới (Draft) | `FR-RCP-003` | `CreateRecipeCommandHandler` + Validator | Form tạo công thức `/recipes/create`: Tiêu đề, Mô tả, Danh mục, Thời gian, Khẩu phần, Độ khó |
+| 🔲 | Xem chi tiết danh mục | `FR-CAT-002` | `GetCategoryBySlugQueryHandler` | Trang `/categories/[slug]`: Banner danh mục + lưới RecipeCard |
+
+📘 **Xem hướng dẫn chi tiết**: [docs/thanh-vien/2312770_LeNhatTien.md](./docs/thanh-vien/2312770_LeNhatTien.md)
+
+---
+
+### 2. Lâm Văn Đức (MSSV: 2314299)
+
+**Nhánh làm việc:** `2314299-LamVanDuc`
+
+| # | Chức năng | Mã FR | Backend cần làm | Frontend cần làm |
+| :---: | :--- | :---: | :--- | :--- |
+| 🔲 | Đăng ký tài khoản | `FR-AUTH-001` | `RegisterCommandHandler` + Validator (email hợp lệ, mật khẩu ≥ 8 ký tự), gán role Author, sinh JWT | Trang `/register`: Form Email, Tên hiển thị, Tên đăng nhập (tùy chọn), Mật khẩu, Xác nhận mật khẩu |
+| 🔲 | Đăng nhập Email/Mật khẩu | `FR-AUTH-002` | `LoginCommandHandler` (kiểm tra mật khẩu, sinh Access + Refresh Token, xử lý lockout 5 lần sai) | Trang `/login`: Form Email, Mật khẩu, nút Đăng nhập; lưu token vào cookie và cập nhật Navbar |
+
+📘 **Xem hướng dẫn chi tiết**: [docs/thanh-vien/2314299_LamVanDuc.md](./docs/thanh-vien/2314299_LamVanDuc.md)
+
+---
+
+### 3. Nguyễn Viết Toàn (MSSV: 2312777)
+
+**Nhánh làm việc:** `2312777-NguyenVietToan`
+
+| # | Chức năng | Mã FR | Backend cần làm | Frontend cần làm |
+| :---: | :--- | :---: | :--- | :--- |
+| 🔲 | Danh sách danh mục | `FR-CAT-001` | Kiểm tra & bổ sung comment cho `GetCategoriesQueryHandler` (đã có khung mẫu) | Trang `/categories`: Lưới card danh mục với hình ảnh đại diện, mô tả và đếm số bài viết |
+| 🔲 | Admin tạo danh mục | `FR-CAT-003` | `CreateCategoryCommandHandler` (kiểm tra tên trùng, tự sinh slug, lưu DB) | Trang admin `/admin/categories`: Bảng danh mục + Form nhập tên, mô tả, ảnh, thứ tự OrderIndex |
+
+📘 **Xem hướng dẫn chi tiết**: [docs/thanh-vien/2312777_NguyenVietToan.md](./docs/thanh-vien/2312777_NguyenVietToan.md)
+
+---
+
+### 4. Nguyễn Đình Tuấn (MSSV: 2312792)
+
+**Nhánh làm việc:** `2312792-NguyenDinhTuan`
+
+| # | Chức năng | Mã FR | Backend cần làm | Frontend cần làm |
+| :---: | :--- | :---: | :--- | :--- |
+| 🔲 | Upload ảnh lên MinIO | `FR-FILE-001` | `MinioStorageService.UploadAsync()`: Validate ≤ 5MB, chỉ JPG/PNG/WebP, sinh tên file UUID, upload vào bucket `culinary-blog` | Component `ImageUploader.tsx`: Kéo thả hoặc click chọn ảnh, preview ảnh sau upload, hiển thị URL |
+| 🔲 | Xóa ảnh trên MinIO | `FR-FILE-002` | `MinioStorageService.DeleteAsync()`: Phân tích object key từ URL, gọi MinIO RemoveObject | Nút xóa (icon thùng rác / dấu ×) trên ảnh preview, xác nhận trước khi xóa |
+
+📘 **Xem hướng dẫn chi tiết**: [docs/thanh-vien/2312792_NguyenDinhTuan.md](./docs/thanh-vien/2312792_NguyenDinhTuan.md)
+
+---
+
+## Phân công tổng thể (7 chức năng / thành viên)
+
+Toàn bộ 28 chức năng chia đều cho 4 thành viên — **đúng 7 chức năng mỗi người**, tất cả đều gồm cả Backend lẫn Frontend tương ứng:
+
+| MSSV | Họ và tên | Chuyên môn phụ trách | Danh sách 7 chức năng | Số FR | Hướng dẫn riêng |
+| :---: | :--- | :--- | :--- | :---: | :---: |
+| **2312770** | **Lê Nhật Tiến** *(Trưởng nhóm)* | **Core Recipe & Author Experience** | `FR-RCP-003` (Tạo công thức nháp), `FR-CAT-002` (Chi tiết danh mục + recipes), `FR-RCP-004` (Sửa công thức), `FR-RCP-008` (Quản lý gallery ảnh), `FR-RCP-006` (Lưu trữ Archive), `FR-RCP-007` (Xóa mềm Recipe D1), `FR-JOB-003` (Sinh sitemap.xml) | **7** | [Xem file](./docs/thanh-vien/2312770_LeNhatTien.md) |
+| **2314299** | **Lâm Văn Đức** | **Authentication & Recipe Publishing** | `FR-AUTH-001` (Đăng ký), `FR-AUTH-002` (Đăng nhập Email), `FR-AUTH-004` (Refresh token rotation), `FR-AUTH-005` (Đăng xuất), `FR-AUTH-003` (Google OAuth 2.0), `FR-RCP-005` (Xuất bản/Hủy xuất bản D11), `FR-JOB-001` (Email chào mừng Hangfire) | **7** | [Xem file](./docs/thanh-vien/2314299_LamVanDuc.md) |
+| **2312777** | **Nguyễn Viết Toàn** | **Category & Search Engine** | `FR-CAT-001` (Danh sách danh mục), `FR-CAT-003` (Tạo danh mục), `FR-CAT-004` (Sửa danh mục D12), `FR-CAT-005` (Xóa mềm danh mục D1), `FR-SRCH-001` (Full-Text Search unaccent), `FR-SRCH-002..004` (Lọc đa tiêu chí, sắp xếp D8, phân trang), `FR-INT-001` (Đánh giá sao Rating 1-5) | **7** | [Xem file](./docs/thanh-vien/2312777_NguyenVietToan.md) |
+| **2312792** | **Nguyễn Đình Tuấn** | **Storage, Steps/Ingredients, Profile** | `FR-FILE-001` (Upload ảnh MinIO 5MB), `FR-FILE-002` (Xóa ảnh MinIO), `FR-RCP-010` (Quản lý các bước nấu D9), `FR-RCP-009` (Quản lý nguyên liệu D10), `FR-AUTH-006` (Xem Profile), `FR-AUTH-007` (Cập nhật Profile & Avatar), `FR-JOB-002` (Resize ảnh thumbnail Hangfire) | **7** | [Xem file](./docs/thanh-vien/2312792_NguyenDinhTuan.md) |
+
+---
+
+## Quy tắc nhánh Git & Quy trình làm việc
+
+> ⚠️ **Quan trọng**: Thành viên **KHÔNG tự merge vào `main`**. Chỉ có trưởng nhóm **Lê Nhật Tiến (2312770)** mới được merge sau khi review code và xác nhận không xung đột.
+
+### Quy ước tên nhánh
+
+Mỗi thành viên có **một nhánh cá nhân cố định** để làm việc trong suốt dự án, đặt theo cú pháp:
+
+```
+<MSSV>-<HoTenKhongDau>
+```
+
+| Thành viên | Nhánh cá nhân |
+| :--- | :--- |
+| Lê Nhật Tiến (Trưởng nhóm) | `2312770-LeNhatTien` |
+| Lâm Văn Đức | `2314299-LamVanDuc` |
+| Nguyễn Viết Toàn | `2312777-NguyenVietToan` |
+| Nguyễn Đình Tuấn | `2312792-NguyenDinhTuan` |
+
+### Quy trình làm việc hàng ngày
+
+```powershell
+# 1. Chuyển về nhánh cá nhân của bạn (chỉ làm lần đầu nếu chưa có)
+git checkout -b 2314299-LamVanDuc   # Thay bằng tên nhánh của bạn
+# Hoặc nếu nhánh đã có:
+git checkout 2314299-LamVanDuc
+
+# 2. Kéo code mới nhất từ main về trước khi code (tránh xung đột)
+git fetch origin
+git merge origin/main
+
+# 3. Code chức năng của bạn...
+
+# 4. Kiểm tra trước khi đẩy
+dotnet build CulinaryBlog.slnx     # 0 lỗi
+npm run lint                        # 0 lỗi (chạy trong src/Frontend)
+
+# 5. Commit theo chuẩn: <module>: <mô tả ngắn> FR-XXX-XXX
+git add .
+git commit -m "auth: hien thuc dang ky tai khoan FR-AUTH-001"
+
+# 6. Đẩy nhánh cá nhân lên GitHub
+git push -u origin 2314299-LamVanDuc
+
+# 7. Báo trưởng nhóm (Tiến) qua nhóm Zalo để review và merge vào main
+```
+
+### Quy ước commit message
+
+```
+<module>: <mô tả ngắn bằng tiếng Anh hoặc Việt không dấu> <mã FR>
+
+Ví dụ:
+  auth: hien thuc dang ky tai khoan FR-AUTH-001
+  auth: hien thuc dang nhap email password FR-AUTH-002
+  category: them api danh sach danh muc voi recipe count FR-CAT-001
+  file: upload anh len minio 5mb validate FR-FILE-001
+```
 
 ---
 
@@ -44,35 +159,26 @@ yêu cầu lấy từ tài liệu SRS v1.0.0 trong thư mục `docs/`.
 +-------------------------------------------------------------------+
 ```
 
-Backend chia 4 tầng theo Clean Architecture, phụ thuộc chỉ đi từ ngoài vào
-trong: `API -> Infrastructure -> Application -> Domain`. Tầng Application dùng
-CQRS qua MediatR, mỗi chức năng là một Command hoặc Query riêng.
+Backend chia 4 tầng Clean Architecture: `API → Infrastructure → Application → Domain`.
+Tầng Application dùng CQRS qua MediatR — mỗi chức năng là một Command hoặc Query riêng.
 
 ---
 
 ## Công nghệ
 
-**Backend:** .NET 10 Minimal APIs, EF Core 10, PostgreSQL 16, Redis 7,
-MediatR (CQRS), FluentValidation, ASP.NET Core Identity + JWT, Hangfire,
-Serilog + OpenTelemetry, Scalar (tài liệu API)
-
-**Frontend:** Next.js App Router, TypeScript, Tailwind CSS, TanStack Query,
-Auth.js v5
-
-**Hạ tầng:** Docker Compose, MinIO (lưu ảnh), Nginx (reverse proxy ở production)
+- **Backend:** .NET 10 Minimal APIs, EF Core 10, PostgreSQL 16, Redis 7, MediatR (CQRS), FluentValidation, ASP.NET Core Identity + JWT, Hangfire, Serilog + OpenTelemetry, Scalar (API Docs).
+- **Frontend:** Next.js 15 App Router, TypeScript, Tailwind CSS, TanStack Query, Axios.
+- **Hạ tầng:** Docker Compose, MinIO (Object Storage), MailHog (SMTP Mock), Seq (Log Viewer).
 
 ---
 
 ## Ba loại tài khoản
 
-| Vai trò | Làm được gì |
-| --- | --- |
-| Guest | Xem công thức đã xuất bản, xem danh mục, tìm kiếm — không cần đăng nhập |
-| Author | Thêm quyền: tạo/sửa/xóa công thức **của chính mình**, upload ảnh, quản lý nguyên liệu và các bước, tự xuất bản hoặc lưu trữ |
-| Admin | Thêm quyền: quản lý danh mục, sửa/xóa công thức của bất kỳ ai, vào Hangfire Dashboard, xem log |
-
-Phân quyền gồm 3 tầng: theo role, theo quyền sở hữu tài nguyên (Author chỉ động
-được vào bài của mình), và theo policy riêng.
+| Vai trò | Quyền hạn chính |
+| :--- | :--- |
+| **Guest** | Xem công thức đã xuất bản, xem danh mục, tìm kiếm — không cần đăng nhập |
+| **Author** | Thêm quyền: tạo/sửa/xóa/publish công thức **của chính mình**, upload ảnh, quản lý nguyên liệu & các bước, chỉnh hồ sơ cá nhân |
+| **Admin** | Thêm quyền: CRUD toàn quyền danh mục, sửa/xóa công thức bất kỳ ai, vào Hangfire Dashboard, xem logs |
 
 ---
 
@@ -80,105 +186,78 @@ Phân quyền gồm 3 tầng: theo role, theo quyền sở hữu tài nguyên (A
 
 ```
 PTUDWNC-2026-Nhom21/
-├── docker-compose.yml
-├── README.md
+├── CulinaryBlog.slnx                  # Solution file .NET 10 (4 project backend)
+├── docker-compose.yml                 # 5 dịch vụ hạ tầng (Postgres, Redis, MinIO, Seq, MailHog)
+├── README.md                          # File này
 ├── docs/
-│   ├── SRS_Culinary_Blog_v1.0.0.pdf   # tài liệu đặc tả gốc
-│   ├── DECISIONS.md                   # chốt các chỗ SRS mâu thuẫn - ĐỌC TRƯỚC KHI CODE
-│   └── SETUP.md                       # hướng dẫn chạy dự án
+│   ├── SRS_Culinary_Blog_v1.0.0.md    # Toàn văn đặc tả SRS chuẩn sau khi chốt mâu thuẫn
+│   ├── DECISIONS.md                   # 12 quyết định kiến trúc cốt lõi (ĐỌC TRƯỚC KHI CODE)
+│   ├── HUONG_DAN_THANH_VIEN.md        # Hướng dẫn cài đặt, môi trường và Git workflow
+│   ├── SETUP.md                       # Hướng dẫn chạy dự án trên máy cá nhân
+│   ├── SRS_Culinary_Blog_v1.0.0.pdf   # File đặc tả gốc PDF
+│   └── thanh-vien/                    # Hướng dẫn chi tiết riêng từng người
+│       ├── 2312770_LeNhatTien.md
+│       ├── 2314299_LamVanDuc.md
+│       ├── 2312777_NguyenVietToan.md
+│       └── 2312792_NguyenDinhTuan.md
 └── src/
     ├── Backend/
-    │   ├── CulinaryBlog.Domain/          # Entities, Value Objects, Enums, Interfaces repository
-    │   ├── CulinaryBlog.Application/     # Commands, Queries, Handlers, DTOs, Validators, Behaviors
+    │   ├── CulinaryBlog.Domain/          # Entities, Value Objects, Enums, Interfaces
+    │   ├── CulinaryBlog.Application/     # Commands, Queries, Handlers, DTOs, Validators
     │   ├── CulinaryBlog.Infrastructure/  # EF Core, Repositories, JWT, Redis, MinIO, Hangfire
     │   └── CulinaryBlog.API/             # Minimal API Endpoints, Middleware, Program.cs
-    └── Frontend/                         # Next.js App Router
+    └── Frontend/                         # Next.js 15 App Router (TypeScript, Tailwind CSS)
 ```
-
-Trong `CulinaryBlog.Application/Features/` đã dựng sẵn thư mục cho cả 27 chức
-năng, mỗi chức năng có đủ Command/Query + Validator + Handler. Phần Handler để
-trống (ném `NotImplementedException`) kèm comment ghi rõ các bước cần làm —
-đó chính là phần việc của từng thành viên.
-
----
-
-## Phân công công việc
-
-Chia theo từng mã chức năng (FR-xxx-0xx) chứ không chia nguyên module, nên ai
-cũng phải đụng vào nhiều phần khác nhau của hệ thống.
-
-| MSSV | Tên | Chức năng phụ trách | Số FR |
-| --- | --- | --- | :---: |
-| 2312770 | Lê Nhật Tiến | FR-RCP-001 (danh sách công thức), FR-RCP-002 (chi tiết), FR-RCP-003 (tạo), FR-RCP-004 (sửa), FR-RCP-007 (xóa), FR-CAT-002 (chi tiết danh mục + công thức) | 6 |
-| 2314299 | Lâm Văn Đức | FR-AUTH-001 (đăng ký), FR-AUTH-002 (đăng nhập), FR-AUTH-003 (Google OAuth), FR-AUTH-004 (refresh token), FR-AUTH-005 (đăng xuất), FR-RCP-005 (xuất bản/hủy), FR-RCP-006 (lưu trữ) | 7 |
-| 2312777 | Nguyễn Viết Toàn | FR-CAT-001 (danh sách danh mục), FR-CAT-003 (tạo), FR-CAT-004 (sửa), FR-CAT-005 (xóa), FR-SRCH-001 (tìm kiếm toàn văn), FR-SRCH-002/003/004 (lọc, sắp xếp, phân trang), FR-RCP-009 (nguyên liệu) | 9 |
-| 2312792 | Nguyễn Đình Tuấn | FR-FILE-001 (upload MinIO), FR-FILE-002 (xóa file), FR-JOB-001 (email chào mừng), FR-JOB-002 (resize ảnh), FR-JOB-003 (sitemap), FR-OBS-001 (health check), FR-OBS-002 (logging), FR-OBS-003 (tracing), FR-RCP-008 (ảnh công thức), FR-RCP-010 (các bước), FR-AUTH-006/007 (hồ sơ cá nhân) | 13 |
-
-Tổng 27 FR (một số mã được nhóm lại nên số đếm ở cột cuối có chênh chút so với
-số dòng liệt kê).
-
-**Thứ tự nên làm:** FR-AUTH và FR-CAT trước (các module khác phụ thuộc vào),
-rồi đến FR-RCP, cuối cùng là FR-SRCH / FR-FILE / FR-JOB / FR-OBS.
-
----
-
-## Quy tắc nhánh Git
-
-- `main` — chỉ chứa code ổn định, merge vào từ `develop`
-- `develop` — nhánh tích hợp chung
-- Mỗi người tạo nhánh riêng cho **từng chức năng**, tách từ `develop`
-
-Cách đặt tên nhánh:
-
-```
-<MSSV>-<TênKhôngDấu>-<TênChứcNăng>
-```
-
-Ví dụ: `2312770-LeNhatTien-Tao_Cong_Thuc_Moi`
-
-Xong chức năng thì push nhánh lên và mở Pull Request vào `develop`, nhờ một bạn
-khác review. Chỉ merge khi không còn xung đột. Chuyển sang chức năng khác thì
-tạo nhánh mới, giữ nguyên MSSV và tên, chỉ đổi phần cuối.
-
-Quy ước commit: `<module>: <mô tả ngắn>` — ví dụ `auth: hien thuc dang nhap email`.
 
 ---
 
 ## Chạy dự án
 
-Hướng dẫn chi tiết từng lệnh nằm ở [`docs/SETUP.md`](./docs/SETUP.md). Tóm tắt:
+Hướng dẫn cài đặt đầy đủ: xem [docs/SETUP.md](./docs/SETUP.md).
 
 ```powershell
-dotnet new sln -n CulinaryBlog
-# ... dotnet sln add cho 4 project (xem SETUP.md)
-dotnet restore
+# 1. Khởi động hạ tầng Docker
 docker compose up -d
-dotnet ef database update --project src\Backend\CulinaryBlog.Infrastructure --startup-project src\Backend\CulinaryBlog.API
+
+# 2. Chạy Backend (.NET 10 API — tự migrate & seed DB)
 dotnet run --project src\Backend\CulinaryBlog.API
+# -> Tài liệu API: http://localhost:5000/scalar/v1
+
+# 3. Chạy Frontend (Next.js 15)
+cd src\Frontend
+npm install
+npm run dev
+# -> Website: http://localhost:3000
 ```
 
-- API + tài liệu: http://localhost:5000/scalar/v1
-- Frontend: http://localhost:3000
+Tài khoản mẫu đã có sẵn trong DB:
+- **Admin**: `admin@culinary.local` / `Admin@123`
+- **Author**: `bep_truong_an@culinary.local` / `Author@123`
 
 ---
 
 ## Tài liệu đi kèm
 
-| File | Nội dung |
-| --- | --- |
-| [`docs/SRS_Culinary_Blog_v1.0.0.pdf`](./docs/SRS_Culinary_Blog_v1.0.0.pdf) | Đặc tả gốc: 27 FR, NFR, mô hình dữ liệu, đặc tả API |
-| [`docs/DECISIONS.md`](./docs/DECISIONS.md) | Các chỗ SRS mâu thuẫn và cách nhóm thống nhất xử lý |
-| [`docs/SETUP.md`](./docs/SETUP.md) | Hướng dẫn cài đặt, chạy, và quy trình Git |
+| Tập tin | Mô tả |
+| :--- | :--- |
+| 📘 [`docs/thanh-vien/2312770_LeNhatTien.md`](./docs/thanh-vien/2312770_LeNhatTien.md) | Hướng dẫn chi tiết 7 chức năng của **Lê Nhật Tiến** |
+| 📘 [`docs/thanh-vien/2314299_LamVanDuc.md`](./docs/thanh-vien/2314299_LamVanDuc.md) | Hướng dẫn chi tiết 7 chức năng của **Lâm Văn Đức** |
+| 📘 [`docs/thanh-vien/2312777_NguyenVietToan.md`](./docs/thanh-vien/2312777_NguyenVietToan.md) | Hướng dẫn chi tiết 7 chức năng của **Nguyễn Viết Toàn** |
+| 📘 [`docs/thanh-vien/2312792_NguyenDinhTuan.md`](./docs/thanh-vien/2312792_NguyenDinhTuan.md) | Hướng dẫn chi tiết 7 chức năng của **Nguyễn Đình Tuấn** |
+| 📋 [`docs/HUONG_DAN_THANH_VIEN.md`](./docs/HUONG_DAN_THANH_VIEN.md) | Hướng dẫn cài đặt, môi trường, và quy trình Git |
+| ⚖️ [`docs/DECISIONS.md`](./docs/DECISIONS.md) | 12 quyết định kiến trúc cốt lõi (Soft delete, Slug, Steps, Ingredients…) |
+| 📄 [`docs/SRS_Culinary_Blog_v1.0.0.md`](./docs/SRS_Culinary_Blog_v1.0.0.md) | Toàn văn đặc tả SRS 27 FRs, schema CSDL, API contracts |
+| 🛠️ [`docs/SETUP.md`](./docs/SETUP.md) | Hướng dẫn thiết lập môi trường phát triển cá nhân |
 
 ---
 
 ## Thành viên nhóm
 
-| MSSV | Họ và tên | Email | GitHub |
-| --- | --- | --- | --- |
-| 2312770 | Lê Nhật Tiến | 2312770@dlu.edu.vn | https://github.com/2312770-coder |
-| 2312792 | Nguyễn Đình Tuấn | 2312792@dlu.edu.vn | https://github.com/2312792-debug |
-| 2312777 | Nguyễn Viết Toàn | 2312777@dlu.edu.vn | https://github.com/2312777-rgb |
-| 2314299 | Lâm Văn Đức | 2314299@dlu.edu.vn | https://github.com/2314299-debug |
+| MSSV | Họ và tên | Email | GitHub | Vai trò | Số FR |
+| :---: | :--- | :--- | :--- | :--- | :---: |
+| **2312770** | **Lê Nhật Tiến** | 2312770@dlu.edu.vn | [@2312770-coder](https://github.com/2312770-coder) | Trưởng nhóm, Core Recipe & Author Experience | **7** |
+| **2314299** | **Lâm Văn Đức** | 2314299@dlu.edu.vn | [@2314299-debug](https://github.com/2314299-debug) | Thành viên, Authentication & Recipe Publishing | **7** |
+| **2312777** | **Nguyễn Viết Toàn** | 2312777@dlu.edu.vn | [@2312777-rgb](https://github.com/2312777-rgb) | Thành viên, Category Management & Search Engine | **7** |
+| **2312792** | **Nguyễn Đình Tuấn** | 2312792@dlu.edu.vn | [@2312792-debug](https://github.com/2312792-debug) | Thành viên, Storage, Steps/Ingredients, Profile | **7** |
 
-Nhóm 21 — Lớp học phần Phát triển Ứng dụng Web Nâng cao
+*Nhóm 21 — Lớp học phần Phát triển Ứng dụng Web Nâng cao — Năm học 2025–2026*

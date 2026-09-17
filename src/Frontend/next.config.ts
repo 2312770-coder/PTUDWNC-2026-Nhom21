@@ -6,7 +6,9 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "http", hostname: "localhost", port: "9000", pathname: "/**" },
       { protocol: "https", hostname: "lh3.googleusercontent.com" }, // avatar Google
+      { protocol: "https", hostname: "images.unsplash.com" },
     ],
+
     formats: ["image/avif", "image/webp"],
   },
 };

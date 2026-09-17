@@ -7,7 +7,7 @@ với module của người khác.
 
 ---
 
-## D1 - Xóa Recipe: hard delete hay soft delete?
+## D1 - Xóa Recipe & Category: hard delete hay soft delete?
 
 **SRS mâu thuẫn:**
 - FR-RCP-007 (mục 3.3) nói rõ: *"Đây là hard delete (không dùng soft delete
@@ -16,16 +16,11 @@ với module của người khác.
   dùng Global Query Filter.
 - Mục 8.3 (bảng API) ghi `DELETE /recipes/{id}` là *"soft delete"*.
 
-**Quyết định:** `BaseEntity` VẪN có `IsDeleted` và Global Query Filter (theo
-mục 7.1, vì đây là quy định chung cho toàn bộ hệ thống). Riêng cách xóa recipe
-thì **người phụ trách FR-RCP-007 chốt với nhóm trước khi code**, và ghi lại
-lựa chọn vào đây. Hai phương án:
-
-- Dùng `SoftDelete(entity)` — theo mục 7.1 và 8.3, dữ liệu vẫn khôi phục được.
-- Dùng `Remove(entity)` — theo FR-RCP-007, cascade xóa luôn Steps/Ingredients/Images.
-
-Gợi ý nghiêng về **soft delete**, vì 2/3 chỗ trong SRS nói vậy và an toàn hơn
-khi người dùng lỡ tay xóa nhầm.
+**Quyết định CHÍNH THỨC:** Áp dụng **Soft Delete** cho cả Recipe và Category:
+- Dùng `SoftDelete(entity)`: Đánh dấu `IsDeleted = true`, `UpdatedAt = DateTime.UtcNow`.
+- Dữ liệu không bị xóa vĩnh viễn khỏi database, hỗ trợ khôi phục khi cần.
+- Global Query Filter của EF Core (`.Where(x => !x.IsDeleted)`) tự động lọc các bản ghi này khỏi toàn bộ truy vấn đọc.
+- **Không xóa file ảnh trên MinIO ngay lập tức** khi soft-delete để bảo toàn dữ liệu. Việc xóa file vật lý chỉ thực hiện nếu có job hard-delete dọn dẹp định kỳ sau này.
 
 ---
 
@@ -99,3 +94,52 @@ Rate Limiting là middleware của tầng Presentation nên khai báo trong
 `CulinaryBlog.API` (file `DependencyInjection.cs`, method `AddPresentation`),
 không đặt ở Infrastructure. Chính sách giữ đúng SRS: `/auth/login` giới hạn
 5 request/phút, vượt quá trả HTTP 429 kèm header `Retry-After` và `X-RateLimit-*`.
+
+---
+
+## D8 - Tham số Sắp xếp (Sorting: `sortBy` & `sortOrder` vs `sort`)
+
+**SRS mâu thuẫn:** Chương 3 dùng `sort=-createdAt`, Chương 8 dùng `sortBy=createdAt&sortOrder=desc`.
+
+**Quyết định:** Chuẩn chính thức trên REST API là `sortBy={field}&sortOrder={asc|desc}` (mặc định: `desc`).
+Đồng thời, `PagingParams` ở backend hỗ trợ tự động bóc tách từ tham số `sort` (`sort=-createdAt` / `sort=title`) để tương thích với cả 2 cách gọi từ frontend.
+
+---
+
+## D9 - RecipeStep: StepNumber và Title
+
+**SRS mâu thuẫn:** FR-RCP-010 bảo server tự tăng `StepNumber`, nhưng API 8.5 lại đưa vào request body; đồng thời body thiếu trường `Title` trong khi DB để `NOT NULL`.
+
+**Quyết định:**
+- `AddStepCommand.StepNumber` là tùy chọn (`int? StepNumber = null`). Nếu client không truyền, server tự động gán `Max(StepNumber) + 1` (hoặc 1 nếu chưa có bước nào). Nếu client truyền (chèn bước vào giữa), server sẽ chèn và renumber lại các bước phía sau.
+- Bắt buộc phải có trường `Title` (`string Title`) trong DTO tạo/cập nhật bước.
+
+---
+
+## D10 - RecipeIngredient: Định lượng Nullable và xử lý phân số ("1/2")
+
+**SRS mâu thuẫn:** FR-RCP-009 yêu cầu `Quantity > 0, Unit không rỗng`, nhưng DB 7.4 và API 8.6 lại cho phép `Quantity` và `Unit` là NULL cho trường hợp "vừa đủ".
+
+**Quyết định:**
+- Cho phép `Quantity` (`decimal(10,3)?`) và `Unit` (`varchar(50)?`) là **Nullable**.
+- Trường hợp người dùng nhập phân số như "1/2", "1/4 muỗng" trên giao diện: Frontend Next.js chịu trách nhiệm chuyển đổi sang số thực (`0.5`, `0.25`) trước khi gửi lên API để lưu vào database dạng `decimal`. Nếu người dùng chọn "vừa đủ", gửi `quantity = null`.
+
+---
+
+## D11 - Điều kiện Xuất bản Recipe (Publish)
+
+**SRS mâu thuẫn:** FR-RCP-005 chỉ kiểm tra `Steps.Count > 0`, trong khi Phụ lục B (`RECIPE_PUBLISH_INCOMPLETE`) bắt buộc phải có ít nhất 1 step VÀ 1 ingredient.
+
+**Quyết định:** Khi Publish (`recipe.Publish()`), bắt buộc kiểm tra **CẢ HAI**:
+- Phải có $\ge 1$ bước thực hiện (`Steps.Count > 0`).
+- Phải có $\ge 1$ nguyên liệu (`Ingredients.Count > 0`).
+Nếu không thỏa, ném `DomainException` / trả về `400 Bad Request` kèm mã lỗi `RECIPE_PUBLISH_INCOMPLETE`.
+
+---
+
+## D12 - Category Update: Giữ nguyên Slug
+
+**SRS mâu thuẫn:** `Category.cs` lúc đầu sinh lại slug khi đổi tên, nhưng FR-CAT-004 yêu cầu rõ: *"Slug KHÔNG thay đổi khi đổi tên (để tránh broken links)"*.
+
+**Quyết định:** Trong `Category.Update()`, chỉ cập nhật `Name`, `Description`, `ImageUrl`, `OrderIndex`. Tuyệt đối **không** tạo lại `Slug` để bảo vệ URL SEO đã được index.
+
