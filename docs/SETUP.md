@@ -141,7 +141,7 @@ git commit -m "auth: hien thuc dang ky tai khoan FR-AUTH-001"
 git push origin 2314299-LamVanDuc
 ```
 
-Sau khi push xong, **báo anh Tiến qua nhóm Zalo** để anh review và merge vào `main`.
+Sau khi push xong, báo trường nhóm
 
 
 
