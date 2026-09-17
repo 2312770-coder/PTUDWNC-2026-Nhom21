@@ -42,7 +42,7 @@ Tuần 7: Kiểm thử toàn diện luồng Auth, phân quyền Guard trên UI &
 
 ## 4. HƯỚNG DẪN CHI TIẾT TUẦN 2 (TUẦN NÀY BẮT ĐẦU LÀM)
 
-> ⚠️ **Git**: Bạn làm việc trên **nhánh cá nhân** `2314299-LamVanDuc`. **Không tự merge vào `main`** — báo anh Tiến để anh review và merge giúp.
+> ⚠️ **Git**: Bạn làm việc trên **nhánh cá nhân** `2314299-LamVanDuc`. **Không tự merge vào `main`** — 
 
 ### Thiết lập nhánh cá nhân (lần đầu)
 ```powershell
@@ -91,7 +91,7 @@ git add .
 git commit -m "auth: hien thuc FR-AUTH-001 dang ky tai khoan"
 git push origin 2314299-LamVanDuc
 ```
-Nhắn anh Tiến qua Zalo để anh review và merge vào `main`.
+
 
 ---
 
@@ -118,7 +118,6 @@ git add .
 git commit -m "auth: hien thuc FR-AUTH-002 dang nhap email"
 git push origin 2314299-LamVanDuc
 ```
-Nhắn anh Tiến để merge vào `main`.
 
 ---
 
