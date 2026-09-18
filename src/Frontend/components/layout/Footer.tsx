@@ -23,9 +23,9 @@ export default function Footer() {
               Nền tảng chia sẻ và lưu trữ công thức nấu ăn chuẩn vị Việt Nam. Kết nối những người đam mê ẩm thực, khám phá hương vị truyền thống và hiện đại.
             </p>
             <div className="pt-2 text-xs text-neutral-400 space-y-1">
-              <p className="font-semibold text-neutral-300">Đồ án môn học:</p>
-              <p>Phát triển Ứng dụng Web Nâng cao — Nhóm 21</p>
-              <p>Kiến trúc: Clean Architecture (.NET 10) & Next.js 15 App Router</p>
+              <p className="font-semibold text-neutral-300">Culinary Blog</p>
+              <p>Cộng đồng chia sẻ ẩm thực & công thức nấu ăn trực tuyến.</p>
+              <p>© 2026 CulinaryBlog. All rights reserved.</p>
             </div>
           </div>
 

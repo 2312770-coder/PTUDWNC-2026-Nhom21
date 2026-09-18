@@ -1,4 +1,5 @@
 using System.Text;
+using Amazon.S3;
 using CulinaryBlog.Application.Common.Interfaces;
 using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Domain.Interfaces;
@@ -105,10 +106,24 @@ public static class DependencyInjection
         });
         services.AddScoped<ICacheService, RedisCacheService>();
 
+        // ── MinIO S3 Object Storage (FR-FILE-001) ──────────────────────────
+        var minioEndpoint = configuration["MinIO:Endpoint"] ?? "localhost:9000";
+        var minioAccessKey = configuration["MinIO:AccessKey"] ?? "minioadmin";
+        var minioSecretKey = configuration["MinIO:SecretKey"] ?? "minioadmin";
+        var minioUseSsl = configuration.GetValue<bool>("MinIO:UseSSL");
+
+        var s3Config = new AmazonS3Config
+        {
+            ServiceURL = $"http{(minioUseSsl ? "s" : "")}://{minioEndpoint}",
+            ForcePathStyle = true,
+            UseHttp = !minioUseSsl
+        };
+        services.AddSingleton<IAmazonS3>(new AmazonS3Client(minioAccessKey, minioSecretKey, s3Config));
+
         // ── Các service khác ─────────────────────────────────────────────────
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUser, CurrentUserService>();
-        services.AddScoped<IFileStorageService, MinioFileStorageService>();  // FR-FILE: chưa hiện thực
+        services.AddScoped<IFileStorageService, MinioFileStorageService>();
         services.AddScoped<IEmailService, MailKitEmailService>();            // FR-JOB-001: chưa hiện thực
 
         // TODO (người phụ trách FR-JOB): đăng ký Hangfire ở đây.
