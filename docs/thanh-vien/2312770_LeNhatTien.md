@@ -17,9 +17,9 @@
 
 | STT | Mã FR | Tên chức năng | File Backend cần làm | File Frontend cần làm |
 | :---: | :--- | :--- | :--- | :--- |
-| 1 | **FR-RCP-003** | Tạo công thức mới (Draft) | `Features/Recipes/Commands/CreateRecipe/*` | `app/(author)/recipes/create/page.tsx` |
+| 1 | **FR-RCP-003** | Tạo công thức mới (Draft) | `Features/Recipes/Commands/CreateRecipe/*` | `app/dashboard/recipes/new/page.tsx` |
 | 2 | **FR-CAT-002** | Xem chi tiết danh mục + bài viết | `Features/Categories/Queries/GetCategoryBySlug/*` | `app/(public)/categories/[slug]/page.tsx` |
-| 3 | **FR-RCP-004** | Cập nhật thông tin công thức | `Features/Recipes/Commands/UpdateRecipe/*` | `app/(author)/recipes/[id]/edit/page.tsx` |
+| 3 | **FR-RCP-004** | Cập nhật thông tin công thức | `Features/Recipes/Commands/UpdateRecipe/*` | `app/dashboard/recipes/[id]/edit/page.tsx` |
 | 4 | **FR-RCP-008** | Quản lý gallery ảnh công thức | `Features/Recipes/Commands/ManageImages/*` | `components/recipes/RecipeGalleryEditor.tsx` |
 | 5 | **FR-RCP-006** | Lưu trữ công thức (Archive) | `Features/Recipes/Commands/ArchiveRecipe/*` | `components/recipes/RecipeStatusBadge.tsx` |
 | 6 | **FR-RCP-007** | Xóa mềm công thức (D1) | `Features/Recipes/Commands/DeleteRecipe/*` | Nút xóa trong danh sách bài của tôi |
@@ -34,7 +34,7 @@ Tuần 2 (Tuần này):
   ✅ Dựng hạ tầng — Database Seeder (2 users, 6 danh mục, 6 công thức mẫu), Query Handlers
   ✅ Layout chung — Navbar, Footer, RecipeCard, Layout.tsx
   ✅ Trang chủ — Hero section, Category filter chips, Recipe grid, Features section, CTA banner
-  🔲 FR-RCP-003 — Tạo công thức mới trạng thái Draft
+  ✅ FR-RCP-003 — Tạo công thức mới trạng thái Draft
   🔲 FR-CAT-002 — Xem chi tiết danh mục kèm danh sách bài viết
 
 Tuần 3: FR-RCP-004 (Sửa công thức) & FR-RCP-008 (Gallery ảnh công thức)
@@ -48,7 +48,7 @@ Tuần 7: Kiểm thử tổng thể, review toàn bộ PRs của nhóm, hoàn th
 
 ## 4. HƯỚNG DẪN CHI TIẾT TUẦN 2 (TUẦN NÀY BẮT ĐẦU LÀM)
 
-> ⚠️ **Quy ước nhánh**: Mỗi chức năng làm trên **một nhánh riêng** tách từ `main`, định dạng: `2312770-LNTien-<Ten-Chuc-Nang>`. Sau khi code xong và test không lỗi, bạn merge nhánh đó vào `main`.
+> ⚠️ **Quy ước nhánh**: Mỗi chức năng làm trên **một nhánh riêng** tách từ `main`, định dạng: `2312770-LNTien-<Ten-Chuc-Nang>`. Sau khi code xong và test không lỗi, bạn tạo Pull Request hoặc merge nhánh đó vào `main`.
 
 ---
 
@@ -58,21 +58,23 @@ Tuần 7: Kiểm thử tổng thể, review toàn bộ PRs của nhóm, hoàn th
 ```powershell
 git checkout main
 git pull origin main
-git checkout -b 2312770-LNTien-Tao-Cong-Thuc
+git checkout -b 2312770-LNTien-Tao-Cong-Thuc-Moi
 ```
 
 #### Bước 2: Hiện thực Backend
 1. Mở file `src/Backend/CulinaryBlog.Application/Features/Recipes/Commands/CreateRecipe/CreateRecipeCommandHandler.cs`.
-2. Thay thế `throw new NotImplementedException` bằng logic:
+2. Hiện thực logic tạo Recipe:
    - Lấy `AuthorId` từ `_currentUser.UserId`.
-   - Tạo Recipe: `Recipe.Create(request.Title, request.Description, request.Instructions, request.CategoryId, authorId, request.PrepTime, request.CookTime, request.Servings, request.Difficulty)`.
+   - Tạo Recipe: `Recipe.Create(...)`.
+   - Xử lý trùng lặp slug (thêm hậu tố `-2`, `-3`...).
+   - Bổ sung thông tin dinh dưỡng, nguyên liệu và các bước nếu client gửi kèm.
    - Lưu vào database qua `_recipeRepository.AddAsync(recipe, ct)` và `_recipeRepository.SaveChangesAsync(ct)`.
-   - Trả về DTO kết quả.
+   - Trả về `RecipeDetailDto`.
 3. Kiểm tra validation trong `CreateRecipeCommandValidator.cs`.
 
 #### Bước 3: Hiện thực Frontend
-1. Tạo giao diện trang tạo bài viết: `src/Frontend/app/(public)/recipes/create/page.tsx`.
-2. Form gồm: Tiêu đề, Mô tả, Hướng dẫn chung, Danh mục (dropdown lấy từ `categoriesApi.getAll()`), Thời gian chuẩn bị, Thời gian nấu, Khẩu phần, Độ khó.
+1. Tạo giao diện trang tạo bài viết: `src/Frontend/app/dashboard/recipes/new/page.tsx` theo SRS mục 5.1.
+2. Form gồm: Tiêu đề, Mô tả, Hướng dẫn chung, Danh mục (dropdown), Thời gian chuẩn bị, Thời gian nấu, Khẩu phần, Độ khó, Dinh dưỡng, Nguyên liệu và Các bước chế biến (kèm ImageUploader MinIO).
 3. Nút bấm "Lưu bản nháp" gửi request `POST /api/v1/recipes`.
 
 #### Bước 4: Kiểm tra và đẩy nhánh lên GitHub
@@ -82,9 +84,10 @@ cd src\Frontend; npm run lint; cd ..\..
 
 git add .
 git commit -m "recipe: hien thuc FR-RCP-003 tao cong thuc moi"
-git push -u origin 2312770-LNTien-Tao-Cong-Thuc
+git push -u origin 2312770-LNTien-Tao-Cong-Thuc-Moi
 ```
-Sau đó bạn merge nhánh `2312770-LNTien-Tao-Cong-Thuc` vào `main`.
+Sau đó tạo Pull Request trên GitHub để merge vào `main`.
+
 
 ---
 
