@@ -55,9 +55,9 @@ git pull origin main
 git checkout -b 2312777-NVToan-Danh-Sach-Danh-Muc
 ```
 
-#### Bước 2: Kiểm tra Backend & Hoàn thiện Frontend
-1. Backend: Xem file `src/Backend/CulinaryBlog.Application/Features/Categories/Queries/GetCategories/GetCategoriesQueryHandler.cs` (đã có khung mẫu truy vấn theo `OrderIndex` và đếm số bài viết). Bạn kiểm tra lại logic và bổ sung comment giải thích thuật toán.
-2. Frontend: Tạo trang xem toàn bộ danh mục tại `src/Frontend/app/(public)/categories/page.tsx` hiển thị lưới các danh mục dạng card với hình ảnh đại diện, mô tả và số lượng công thức thực tế.
+#### Bước 2: Hiện thực Backend & Hoàn thiện Frontend
+1. Backend: Xem file `src/Backend/CulinaryBlog.Application/Features/Categories/Queries/GetCategories/GetCategoriesQueryHandler.cs` (hiện tại là khung mẫu ném `NotImplementedException`). Bạn hiện thực truy vấn EF Core lấy danh sách danh mục theo `OrderIndex`, đếm số lượng công thức Published và ánh xạ sang `CategoryDto`. Đăng ký endpoint GET `/api/v1/categories` trong `CategoriesEndpoints.cs`.
+2. Frontend: Hiện thực hàm `categoriesApi.getAll()` trong `src/Frontend/lib/api/categories.ts` để gọi API Backend. Tạo trang xem toàn bộ danh mục tại `src/Frontend/app/(public)/categories/page.tsx` hiển thị lưới các danh mục dạng card với hình ảnh đại diện, mô tả và số lượng công thức thực tế.
 
 #### Bước 3: Kiểm tra và đẩy nhánh lên GitHub
 ```powershell

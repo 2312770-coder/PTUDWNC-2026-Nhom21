@@ -17,7 +17,7 @@ Mỗi chức năng làm trên **một nhánh riêng biệt** (xem mục [Quy t�
 | # | Chức năng | Mã FR | Tên nhánh | Backend cần làm | Frontend cần làm |
 | :---: | :--- | :---: | :--- | :--- | :--- |
 | ✅ | Dựng hạ tầng & Database | — | `main` | Migration DB, DatabaseSeeder (2 users, 6 danh mục, 6 công thức mẫu chuẩn dữ liệu Việt) | — |
-| ✅ | Layout chung & Trang chủ | — | `main` | `GetCategoriesQueryHandler`, `GetRecipesQueryHandler`, `GetRecipeBySlugQueryHandler` | `Navbar.tsx`, `Footer.tsx`, `RecipeCard.tsx`, `app/page.tsx` (Hero, Category filter, Recipe grid) |
+| ✅ | Khung giao diện chung | — | `main` | Khung handler CQRS, Models DTOs, cấu trúc Endpoint skeleton | `Navbar.tsx`, `Footer.tsx`, `RecipeCard.tsx`, khung giao diện `app/page.tsx` |
 | 🔲 | Tạo công thức mới (Draft) | `FR-RCP-003` | `2312770-LNTien-Tao-Cong-Thuc` | `CreateRecipeCommandHandler` + Validator | Form tạo công thức `/recipes/create`: Tiêu đề, Mô tả, Danh mục, Thời gian, Khẩu phần, Độ khó |
 | 🔲 | Xem chi tiết danh mục | `FR-CAT-002` | `2312770-LNTien-Chi-Tiet-Danh-Muc` | `GetCategoryBySlugQueryHandler` | Trang `/categories/[slug]`: Banner danh mục + lưới RecipeCard |
 

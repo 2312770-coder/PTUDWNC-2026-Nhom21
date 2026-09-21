@@ -31,10 +31,9 @@
 
 ```
 Tuần 2 (Tuần này):
-  ✅ Dựng hạ tầng — Database Seeder (2 users, 6 danh mục, 6 công thức mẫu), Query Handlers
-  ✅ Layout chung — Navbar, Footer, RecipeCard, Layout.tsx
-  ✅ Trang chủ — Hero section, Category filter chips, Recipe grid, Features section, CTA banner
-  ✅ FR-RCP-003 — Tạo công thức mới trạng thái Draft
+  ✅ Dựng hạ tầng — Database Seeder (2 users, 6 danh mục, 6 công thức mẫu), DTOs & Skeleton Handlers
+  ✅ Layout chung — Navbar, Footer, RecipeCard, Layout.tsx, Empty state Home
+  🔲 FR-RCP-003 — Tạo công thức mới trạng thái Draft
   🔲 FR-CAT-002 — Xem chi tiết danh mục kèm danh sách bài viết
 
 Tuần 3: FR-RCP-004 (Sửa công thức) & FR-RCP-008 (Gallery ảnh công thức)
