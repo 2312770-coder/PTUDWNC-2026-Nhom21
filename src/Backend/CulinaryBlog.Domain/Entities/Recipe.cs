@@ -130,4 +130,15 @@ public class Recipe : BaseEntity
         Nutrition = nutrition;
         Touch();
     }
+
+    /// <summary>
+    /// Cập nhật slug duy nhất (ví dụ thêm hậu tố "-2", "-3" khi bị trùng lặp slug trong CSDL).
+    /// </summary>
+    public void SetSlug(string uniqueSlug)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(uniqueSlug, nameof(uniqueSlug));
+        Slug = uniqueSlug.Trim();
+        Touch();
+    }
 }
+

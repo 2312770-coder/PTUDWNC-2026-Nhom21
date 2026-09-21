@@ -99,7 +99,7 @@ export default function Navbar() {
         {/* Action Buttons - Desktop */}
         <div className="hidden sm:flex items-center gap-3">
           <Link
-            href="/recipes/create"
+            href="/dashboard/recipes/new"
             className="inline-flex items-center gap-1.5 rounded-full bg-orange-50 px-4 py-2 text-xs font-semibold text-orange-700 hover:bg-orange-100 transition-colors border border-orange-200/60"
           >
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -189,7 +189,7 @@ export default function Navbar() {
 
           <div className="pt-3 border-t border-neutral-100 flex flex-col gap-2">
             <Link
-              href="/recipes/create"
+              href="/dashboard/recipes/new"
               onClick={() => setIsMobileMenuOpen(false)}
               className="flex items-center justify-center gap-2 rounded-lg bg-orange-50 py-2.5 text-sm font-semibold text-orange-700"
             >
