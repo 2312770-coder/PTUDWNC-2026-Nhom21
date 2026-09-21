@@ -1,14 +1,20 @@
-// SRS mục 8.2 - Categories Module (/api/v1/categories)
-// TODO: Người phụ trách FR-CAT sẽ đăng ký các endpoint tại đây.
+
+using CulinaryBlog.Application.Common.Models;
+using CulinaryBlog.Application.Features.Categories.Queries.GetCategories;
+using MediatR;
 
 namespace CulinaryBlog.API.Endpoints;
 
 public static class CategoriesEndpoints
 {
-    public static IEndpointRouteBuilder MapCategoriesEndpoints(this IEndpointRouteBuilder app)
+    public static void MapCategoriesEndpoints(this IEndpointRouteBuilder app)
     {
-        // Chưa có endpoint nào được đăng ký.
-        // Các thành viên sẽ thêm endpoint khi hiện thực các FR-CAT.
-        return app;
+        var group = app.MapGroup("/api/v1/categories").WithTags("Categories");
+
+        group.MapGet("/", async (IMediator mediator, CancellationToken ct) =>
+        {
+            var result = await mediator.Send(new GetCategoriesQuery(), ct);
+            return Results.Ok(ApiResponse.Ok(result));
+        });
     }
 }
