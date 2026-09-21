@@ -3,13 +3,13 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { categoriesApi } from "@/lib/api/categories";
-import { recipesApi, FALLBACK_RECIPES } from "@/lib/api/recipes";
+import { recipesApi } from "@/lib/api/recipes";
 import RecipeCard from "@/components/recipes/RecipeCard";
 import type { CategoryDto, RecipeListItemDto } from "@/types/api";
 
 export default function HomePage() {
   const [categories, setCategories] = useState<CategoryDto[]>([]);
-  const [recipes, setRecipes] = useState<RecipeListItemDto[]>(FALLBACK_RECIPES);
+  const [recipes, setRecipes] = useState<RecipeListItemDto[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -49,11 +49,12 @@ export default function HomePage() {
     }
   };
 
-  const featuredRecipe = recipes[0] ?? FALLBACK_RECIPES[0];
+  const featuredRecipe = recipes[0];
 
   return (
     <div className="space-y-20 pb-20">
       {/* ── HERO SECTION: MÓN NỔI BẬT ─────────────────────────── */}
+      {featuredRecipe && (
       <section className="relative overflow-hidden bg-gradient-to-b from-orange-50/80 via-amber-50/30 to-transparent pt-12 pb-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
@@ -146,6 +147,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* ── CHUYÊN MỤC ẨM THỰC (CATEGORIES) ───────────────────── */}
       <section id="categories" className="container mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-28">
