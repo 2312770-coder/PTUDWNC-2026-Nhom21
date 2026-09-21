@@ -240,6 +240,7 @@ Tài khoản mẫu đã có sẵn trong DB:
 | 📘 [`docs/thanh-vien/2312777_NguyenVietToan.md`](./docs/thanh-vien/2312777_NguyenVietToan.md) | Hướng dẫn chi tiết 7 chức năng của **Nguyễn Viết Toàn** |
 | 📘 [`docs/thanh-vien/2312792_NguyenDinhTuan.md`](./docs/thanh-vien/2312792_NguyenDinhTuan.md) | Hướng dẫn chi tiết 7 chức năng của **Nguyễn Đình Tuấn** |
 | 📋 [`docs/HUONG_DAN_THANH_VIEN.md`](./docs/HUONG_DAN_THANH_VIEN.md) | Hướng dẫn cài đặt, môi trường, và quy trình Git |
+| 🗄️ [`docs/DATABASE.md`](./docs/DATABASE.md) | Hướng dẫn CSDL, EF Core Migration và cơ chế nạp dữ liệu mẫu Bogus |
 | ⚖️ [`docs/DECISIONS.md`](./docs/DECISIONS.md) | 12 quyết định kiến trúc cốt lõi (Soft delete, Slug, Steps, Ingredients…) |
 | 📄 [`docs/SRS_Culinary_Blog_v1.0.0.md`](./docs/SRS_Culinary_Blog_v1.0.0.md) | Toàn văn đặc tả SRS 27 FRs, schema CSDL, API contracts |
 | 🛠️ [`docs/SETUP.md`](./docs/SETUP.md) | Hướng dẫn thiết lập môi trường phát triển cá nhân |
