@@ -10,13 +10,18 @@ const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use(async (config) => {
+  if (typeof window === "undefined") {
+    return config;
+  }
+
   const session = await getSession();
+
   if (session?.user?.accessToken) {
     config.headers.Authorization = `Bearer ${session.user.accessToken}`;
   }
+
   return config;
 });
-
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
