@@ -1,5 +1,9 @@
 // SRS mục 8.3 đến 8.6 - Recipes Module (/api/v1/recipes)
-// TODO: Người phụ trách FR-RCP sẽ đăng ký các endpoint tại đây.
+
+using CulinaryBlog.Application.Common.Models;
+using CulinaryBlog.Application.DTOs;
+using CulinaryBlog.Application.Features.Recipes.Commands.CreateRecipe;
+using MediatR;
 
 namespace CulinaryBlog.API.Endpoints;
 
@@ -7,8 +11,18 @@ public static class RecipesEndpoints
 {
     public static IEndpointRouteBuilder MapRecipesEndpoints(this IEndpointRouteBuilder app)
     {
-        // Chưa có endpoint nào được đăng ký.
-        // Các thành viên sẽ thêm endpoint khi hiện thực các FR-RCP.
+        var group = app.MapGroup("/api/v1/recipes").WithTags("Recipes");
+
+        // FR-RCP-003: Tạo công thức mới (Đã hoàn thành bởi Lê Nhật Tiến)
+        group.MapPost("/", async (CreateRecipeCommand command, ISender sender, CancellationToken ct) =>
+        {
+            var result = await sender.Send(command, ct);
+            return Results.Created($"/api/v1/recipes/{result.Slug}", ApiResponse.Ok(result));
+        })
+        .WithName("CreateRecipe")
+        .WithSummary("Tạo công thức mới (trạng thái Draft)")
+        .RequireAuthorization("AuthorOrAdmin");
+
         return app;
     }
 }
