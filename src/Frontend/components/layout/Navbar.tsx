@@ -1,13 +1,59 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+interface UserProfile {
+  id: string;
+  email: string;
+  displayName: string;
+  avatarUrl?: string | null;
+  roles?: string[];
+}
+
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
+
+  useEffect(() => {
+    const syncUser = () => {
+      try {
+        const stored = localStorage.getItem("user");
+        if (stored) {
+          setCurrentUser(JSON.parse(stored));
+        } else {
+          setCurrentUser(null);
+        }
+      } catch {
+        setCurrentUser(null);
+      }
+    };
+
+    syncUser();
+
+    window.addEventListener("auth-changed", syncUser);
+    window.addEventListener("storage", syncUser);
+
+    return () => {
+      window.removeEventListener("auth-changed", syncUser);
+      window.removeEventListener("storage", syncUser);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("user");
+    setCurrentUser(null);
+    setIsUserMenuOpen(false);
+    setIsMobileMenuOpen(false);
+    window.dispatchEvent(new Event("auth-changed"));
+    router.push("/login");
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -107,18 +153,63 @@ export default function Navbar() {
             </svg>
             Viết công thức
           </Link>
-          <Link
-            href="/login"
-            className="rounded-full px-4 py-2 text-xs font-semibold text-neutral-700 hover:text-orange-600 transition-colors"
-          >
-            Đăng nhập
-          </Link>
-          <Link
-            href="/register"
-            className="rounded-full bg-orange-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-orange-700 transition-colors"
-          >
-            Đăng ký
-          </Link>
+
+          {currentUser ? (
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                className="flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50/70 py-1.5 pl-1.5 pr-3 text-xs font-semibold text-slate-800 hover:bg-orange-100 transition-colors"
+              >
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-orange-500 font-bold text-white uppercase text-xs shadow-sm">
+                  {currentUser.displayName ? currentUser.displayName.charAt(0) : "U"}
+                </span>
+                <span className="max-w-[120px] truncate">{currentUser.displayName}</span>
+                <svg className="h-3.5 w-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {isUserMenuOpen && (
+                <div className="absolute right-0 mt-2 w-52 rounded-2xl border border-slate-100 bg-white py-2 shadow-xl ring-1 ring-black/5 z-50">
+                  <div className="px-4 py-2 border-b border-slate-100">
+                    <p className="text-[10px] uppercase font-semibold text-slate-400">Tài khoản</p>
+                    <p className="text-xs font-bold text-slate-800 truncate">{currentUser.displayName}</p>
+                    <p className="text-[11px] text-slate-500 truncate">{currentUser.email}</p>
+                  </div>
+                  <Link
+                    href="/dashboard/recipes/new"
+                    onClick={() => setIsUserMenuOpen(false)}
+                    className="flex items-center gap-2 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
+                  >
+                    <span>✍️</span> Quản lý công thức
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-2 px-4 py-2 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors text-left"
+                  >
+                    <span>🚪</span> Đăng xuất
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="rounded-full px-4 py-2 text-xs font-semibold text-neutral-700 hover:text-orange-600 transition-colors"
+              >
+                Đăng nhập
+              </Link>
+              <Link
+                href="/register"
+                className="rounded-full bg-orange-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-orange-700 transition-colors"
+              >
+                Đăng ký
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile menu button */}
@@ -198,22 +289,43 @@ export default function Navbar() {
               </svg>
               Viết công thức mới
             </Link>
-            <div className="grid grid-cols-2 gap-2 mt-1">
-              <Link
-                href="/login"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center justify-center rounded-lg border border-neutral-200 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-50"
-              >
-                Đăng nhập
-              </Link>
-              <Link
-                href="/register"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center justify-center rounded-lg bg-orange-600 py-2 text-sm font-semibold text-white hover:bg-orange-700"
-              >
-                Đăng ký
-              </Link>
-            </div>
+            {currentUser ? (
+              <div className="flex flex-col gap-2 pt-2 border-t border-neutral-100">
+                <div className="flex items-center gap-2.5 px-1 py-1">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-500 font-bold text-white uppercase text-xs">
+                    {currentUser.displayName ? currentUser.displayName.charAt(0) : "U"}
+                  </span>
+                  <div className="overflow-hidden">
+                    <p className="text-xs font-bold text-slate-800 truncate">{currentUser.displayName}</p>
+                    <p className="text-[11px] text-slate-500 truncate">{currentUser.email}</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="flex items-center justify-center rounded-lg border border-red-200 bg-red-50 py-2 text-sm font-medium text-red-600 hover:bg-red-100 transition-colors"
+                >
+                  Đăng xuất
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-2 mt-1">
+                <Link
+                  href="/login"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center justify-center rounded-lg border border-neutral-200 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-50"
+                >
+                  Đăng nhập
+                </Link>
+                <Link
+                  href="/register"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center justify-center rounded-lg bg-orange-600 py-2 text-sm font-semibold text-white hover:bg-orange-700"
+                >
+                  Đăng ký
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       )}

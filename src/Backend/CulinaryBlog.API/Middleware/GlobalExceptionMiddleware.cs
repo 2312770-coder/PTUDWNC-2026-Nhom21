@@ -27,6 +27,7 @@ public class GlobalExceptionMiddleware : IExceptionHandler
             ForbiddenException    => (StatusCodes.Status403Forbidden, "Không có quyền truy cập."),
             NotFoundException     => (StatusCodes.Status404NotFound, "Không tìm thấy tài nguyên."),
             ConflictException     => (StatusCodes.Status409Conflict, "Xung đột dữ liệu."),
+            LockedException       => (StatusCodes.Status423Locked, "Tài khoản bị tạm khóa."),
             // Vi phạm business rule của Domain -> 422 (Phụ lục A SRS).
             DomainException       => (StatusCodes.Status422UnprocessableEntity, "Không thể xử lý yêu cầu."),
             // Hai người sửa cùng một recipe -> RowVersion không khớp (SRS mục 7.1).
