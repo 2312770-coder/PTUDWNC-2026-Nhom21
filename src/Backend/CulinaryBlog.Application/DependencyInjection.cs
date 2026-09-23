@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CulinaryBlog.Application;
 
-// Đăng ký toàn bộ service của tầng Application.
+// Đăng ký service của tầng Application.
 // Program.cs chỉ cần gọi builder.Services.AddApplication().
 public static class DependencyInjection
 {
@@ -20,15 +20,9 @@ public static class DependencyInjection
         // FluentValidation tự quét mọi AbstractValidator.
         services.AddValidatorsFromAssembly(assembly);
 
-        // Pipeline Behaviors - THỨ TỰ ĐĂNG KÝ CHÍNH LÀ THỨ TỰ CHẠY,
-        // khớp SRS mục 6.3:
-        //   1. Logging  -> 2. Validation -> 3. Caching
-        //   -> 4. Handler -> 5. CacheInvalidation
+        // Pipeline Behaviors cơ bản: Logging -> Validation
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CachingBehavior<,>));
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CacheInvalidationBehavior<,>));
 
         return services;
     }

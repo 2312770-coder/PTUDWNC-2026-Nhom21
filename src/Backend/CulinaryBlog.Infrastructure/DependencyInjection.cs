@@ -4,14 +4,11 @@ using CulinaryBlog.Application.Common.Interfaces;
 using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Domain.Interfaces;
 using CulinaryBlog.Domain.Settings;
-using CulinaryBlog.Infrastructure.Authorization;
 using CulinaryBlog.Infrastructure.Caching;
 using CulinaryBlog.Infrastructure.Persistence;
-using CulinaryBlog.Infrastructure.Persistence.Interceptors;
 using CulinaryBlog.Infrastructure.Persistence.Repositories;
 using CulinaryBlog.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -28,11 +25,9 @@ public static class DependencyInjection
         this IServiceCollection services, IConfiguration configuration)
     {
         // ── Database (PostgreSQL) ───────────────────────────────────────────
-        services.AddSingleton<AuditInterceptor>();
         services.AddDbContext<CulinaryBlogDbContext>((sp, options) =>
         {
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
-            options.AddInterceptors(sp.GetRequiredService<AuditInterceptor>());
         });
         services.AddScoped<IApplicationDbContext>(sp =>
             sp.GetRequiredService<CulinaryBlogDbContext>());
@@ -85,18 +80,14 @@ public static class DependencyInjection
                 ValidIssuer = jwtSettings.Issuer,
                 ValidAudience = jwtSettings.Audience,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
-                ClockSkew = TimeSpan.Zero, // hết hạn là hết hạn, không du di 5 phút
+                ClockSkew = TimeSpan.Zero,
             };
         });
 
-        // ── Authorization: 3 tầng phân quyền theo SRS mục 2.3 ────────────────
+        // ── Authorization: Role-based cơ bản ────────────────────────────────
         services.AddAuthorizationBuilder()
             .AddPolicy("AdminOnly", p => p.RequireRole("Admin"))
-            .AddPolicy("AuthorOrAdmin", p => p.RequireRole("Author", "Admin"))
-            .AddPolicy("VerifiedAuthor", p => p.Requirements.Add(new VerifiedAuthorRequirement()));
-
-        services.AddSingleton<IAuthorizationHandler, RecipeAuthorizationHandler>();
-        services.AddSingleton<IAuthorizationHandler, VerifiedAuthorHandler>();
+            .AddPolicy("AuthorOrAdmin", p => p.RequireRole("Author", "Admin"));
 
         // ── Redis Distributed Cache ──────────────────────────────────────────
         services.AddStackExchangeRedisCache(options =>
@@ -124,10 +115,7 @@ public static class DependencyInjection
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUser, CurrentUserService>();
         services.AddScoped<IFileStorageService, MinioFileStorageService>();
-        services.AddScoped<IEmailService, MailKitEmailService>();            // FR-JOB-001: chưa hiện thực
-
-        // TODO (người phụ trách FR-JOB): đăng ký Hangfire ở đây.
-        // Xem hướng dẫn trong Jobs/README_JOBS.md.
+        services.AddScoped<IEmailService, MailKitEmailService>();
 
         return services;
     }
