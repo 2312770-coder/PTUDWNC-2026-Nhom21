@@ -58,6 +58,9 @@ export default function Navbar() {
           <Link href="/upload-test" className="hover:text-orange-600 transition-colors flex items-center gap-1 font-medium">
             <span>📸</span> Tải ảnh lên
           </Link>
+          <Link href="/recipes/steps-test" className="hover:text-orange-600 transition-colors flex items-center gap-1 font-medium">
+            <span>📋</span> Các bước nấu
+          </Link>
           <a href="#categories" className="hover:text-orange-600 transition-colors">
             Danh mục
           </a>

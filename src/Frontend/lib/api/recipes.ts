@@ -1,8 +1,10 @@
-// Frontend API module cho Recipes.
-// TODO: Người phụ trách FR-RCP sẽ hiện thực các hàm gọi API tại đây.
+// ============================================================================
+// Frontend API module cho Recipes (FR-RCP)
+// Bổ sung: FR-RCP-010 Quản lý các bước nấu (Nguyễn Đình Tuấn - 2312792)
+// ============================================================================
 
 import apiClient from "./client";
-import type { ApiResponse, RecipeListItemDto, RecipeDetailDto, RecipeDifficulty } from "@/types/api";
+import type { ApiResponse, RecipeListItemDto, RecipeDetailDto, RecipeDifficulty, RecipeStepDto } from "@/types/api";
 
 export interface GetRecipesParams {
   page?: number;
@@ -16,17 +18,72 @@ export interface GetRecipesParams {
   sort?: string;
 }
 
-// Placeholder – các thành viên sẽ hiện thực khi hoàn tất Backend endpoint tương ứng.
 export const recipesApi = {
   // FR-RCP-001: GET /api/v1/recipes
-  getAll: async (_params?: GetRecipesParams): Promise<{ items: RecipeListItemDto[]; total: number }> => {
-    // TODO: Gọi API thực tế khi Backend endpoint sẵn sàng.
-    return { items: [], total: 0 };
+  getAll: async (params?: GetRecipesParams): Promise<{ items: RecipeListItemDto[]; total: number }> => {
+    try {
+      const res = await apiClient.get<ApiResponse<RecipeListItemDto[]>>("/api/v1/recipes", { params });
+      return { items: res.data?.data || [], total: res.data?.meta?.total || 0 };
+    } catch {
+      return { items: [], total: 0 };
+    }
   },
 
   // FR-RCP-002: GET /api/v1/recipes/{slug}
-  getBySlug: async (_slug: string): Promise<RecipeDetailDto | null> => {
-    // TODO: Gọi API thực tế khi Backend endpoint sẵn sàng.
-    return null;
+  getBySlug: async (slug: string): Promise<RecipeDetailDto | null> => {
+    try {
+      const res = await apiClient.get<ApiResponse<RecipeDetailDto>>(`/api/v1/recipes/${slug}`);
+      return res.data?.data || null;
+    } catch {
+      return null;
+    }
+  },
+
+  // ==========================================================================
+  // FR-RCP-010: QUẢN LÝ CÁC BƯỚC NẤU (NGUYỄN ĐÌNH TUẤN - 2312792)
+  // ==========================================================================
+
+  // 1. Lấy danh sách các bước nấu của công thức
+  getSteps: async (recipeId: string): Promise<RecipeStepDto[]> => {
+    const res = await apiClient.get<ApiResponse<RecipeStepDto[]>>(`/api/v1/recipes/${recipeId}/steps`);
+    return res.data?.data || [];
+  },
+
+  // 2. Thêm bước nấu mới (D9: StepNumber tùy chọn)
+  addStep: async (
+    recipeId: string,
+    data: {
+      title: string;
+      description: string;
+      stepNumber?: number;
+      timerMinutes?: number;
+      imageUrl?: string;
+    }
+  ): Promise<RecipeStepDto> => {
+    const res = await apiClient.post<ApiResponse<RecipeStepDto>>(`/api/v1/recipes/${recipeId}/steps`, data);
+    return res.data?.data;
+  },
+
+  // 3. Cập nhật bước nấu đã có
+  updateStep: async (
+    recipeId: string,
+    stepId: string,
+    data: {
+      title: string;
+      description: string;
+      stepNumber?: number;
+      timerMinutes?: number;
+      imageUrl?: string;
+    }
+  ): Promise<RecipeStepDto> => {
+    const res = await apiClient.put<ApiResponse<RecipeStepDto>>(`/api/v1/recipes/${recipeId}/steps/${stepId}`, data);
+    return res.data?.data;
+  },
+
+  // 4. Xóa bước nấu khỏi công thức
+  deleteStep: async (recipeId: string, stepId: string): Promise<boolean> => {
+    await apiClient.delete(`/api/v1/recipes/${recipeId}/steps/${stepId}`);
+    return true;
   },
 };
+
