@@ -42,8 +42,15 @@ public class RecipeStep : BaseEntity
         if (stepNumber.HasValue) StepNumber = stepNumber.Value;
         if (!string.IsNullOrWhiteSpace(title)) Title = title.Trim();
         if (!string.IsNullOrWhiteSpace(description)) Description = description.Trim();
-        TimerMinutes = timerMinutes ?? TimerMinutes;
-        ImageUrl = imageUrl ?? ImageUrl;
+        TimerMinutes = timerMinutes;
+        ImageUrl = string.IsNullOrWhiteSpace(imageUrl) ? null : imageUrl.Trim();
+        Touch();
+    }
+
+    // Gỡ bỏ ảnh minh họa của bước nấu (khi người dùng xóa ảnh)
+    public void RemoveImage()
+    {
+        ImageUrl = null;
         Touch();
     }
 

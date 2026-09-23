@@ -81,8 +81,9 @@ public class DeleteRecipeStepCommandHandler : IRequestHandler<DeleteRecipeStepCo
             throw new NotFoundException("Bước nấu", request.StepId);
         }
 
-        // 4. Xóa bước này khỏi CSDL
+        // 4. Xóa bước này khỏi CSDL và lưu trước để giải phóng StepNumber
         _dbContext.RecipeSteps.Remove(stepToDelete);
+        await _dbContext.SaveChangesAsync(ct);
 
         // 5. Tự động đánh lại số thứ tự (Renumber contiguously 1, 2, 3...) cho các bước còn lại
         // SRS mục 7.3: Đảm bảo số thứ tự các bước luôn liên tục, không bị gián đoạn/khuyết bước
@@ -91,13 +92,22 @@ public class DeleteRecipeStepCommandHandler : IRequestHandler<DeleteRecipeStepCo
             .OrderBy(s => s.StepNumber)
             .ToList();
 
-        for (int i = 0; i < remainingSteps.Count; i++)
+        if (remainingSteps.Count > 0)
         {
-            remainingSteps[i].Renumber(i + 1);
-        }
+            // Giai đoạn 1: Gán offset tạm thời để tránh xung đột index
+            for (int i = 0; i < remainingSteps.Count; i++)
+            {
+                remainingSteps[i].Renumber(10000 + (i + 1));
+            }
+            await _dbContext.SaveChangesAsync(ct);
 
-        // 6. Lưu các thay đổi vào CSDL
-        await _dbContext.SaveChangesAsync(ct);
+            // Giai đoạn 2: Đánh lại số thứ tự chuẩn tuần tự 1, 2, 3...
+            for (int i = 0; i < remainingSteps.Count; i++)
+            {
+                remainingSteps[i].Renumber(i + 1);
+            }
+            await _dbContext.SaveChangesAsync(ct);
+        }
 
         return true;
     }

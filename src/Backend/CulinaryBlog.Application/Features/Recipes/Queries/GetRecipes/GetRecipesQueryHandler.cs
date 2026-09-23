@@ -45,8 +45,8 @@ public class GetRecipesQueryHandler : IRequestHandler<GetRecipesQuery, PagedResu
         var total = await query.CountAsync(ct);
 
         // 5. Chuẩn hóa tham số phân trang
-        int page = (request.Paging.Page ?? 1) <= 0 ? 1 : request.Paging.Page.Value;
-        int pageSize = (request.Paging.PageSize ?? 10) <= 0 ? 10 : request.Paging.PageSize.Value;
+        int page = request.Paging.Page is > 0 ? request.Paging.Page.Value : 1;
+        int pageSize = request.Paging.PageSize is > 0 ? request.Paging.PageSize.Value : 10;
 
         // 6. Lấy dữ liệu theo trang và ánh xạ sang RecipeListItemDto
         var items = await query

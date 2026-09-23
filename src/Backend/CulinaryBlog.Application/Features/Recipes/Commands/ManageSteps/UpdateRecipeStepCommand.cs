@@ -127,7 +127,15 @@ public class UpdateRecipeStepCommandHandler : IRequestHandler<UpdateRecipeStepCo
             // Chèn bước vào vị trí mong muốn mới
             allSteps.Insert(newPos - 1, step);
 
-            // Đánh lại số thứ tự tuần tự (1, 2, 3...) cho toàn bộ danh sách để đảm bảo không bị trùng index
+            // Giai đoạn 1: Gán số thứ tự tạm thời (offset 10000) để phá vỡ vòng lặp phụ thuộc (circular dependency)
+            // trên Unique Composite Index { RecipeId, StepNumber } của Entity Framework Core
+            for (int i = 0; i < allSteps.Count; i++)
+            {
+                allSteps[i].Renumber(10000 + (i + 1));
+            }
+            await _dbContext.SaveChangesAsync(ct);
+
+            // Giai đoạn 2: Đánh lại số thứ tự chuẩn tuần tự (1, 2, 3...) cho toàn bộ danh sách
             for (int i = 0; i < allSteps.Count; i++)
             {
                 allSteps[i].Renumber(i + 1);
