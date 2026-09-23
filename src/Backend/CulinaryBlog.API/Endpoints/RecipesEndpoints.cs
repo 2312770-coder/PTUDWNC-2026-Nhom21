@@ -13,6 +13,15 @@ public static class RecipesEndpoints
     {
         var group = app.MapGroup("/api/v1/recipes").WithTags("Recipes");
 
+        // FR-RCP-001: Lấy danh sách công thức (hỗ trợ phân trang)
+        group.MapGet("/", async ([AsParameters] PagingParams paging, ISender sender, CancellationToken ct) =>
+        {
+            var result = await sender.Send(new CulinaryBlog.Application.Features.Recipes.Queries.GetRecipes.GetRecipesQuery(paging), ct);
+            return Results.Ok(ApiResponse.FromPaged(result));
+        })
+        .WithName("GetRecipes")
+        .WithSummary("Lấy danh sách công thức nấu ăn (FR-RCP-001)");
+
         // FR-RCP-003: Tạo công thức mới (Đã hoàn thành bởi Lê Nhật Tiến)
         group.MapPost("/", async (CreateRecipeCommand command, ISender sender, CancellationToken ct) =>
         {
