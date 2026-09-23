@@ -49,6 +49,10 @@ export interface CategoryDto {
   recipeCount: number;
 }
 
+export interface CategoryDetailDto extends CategoryDto {
+  recipes: RecipeListItemDto[];
+}
+
 export type RecipeDifficulty = "Easy" | "Medium" | "Hard" | "Expert";
 export type RecipeStatus = "Draft" | "Published" | "Archived";
 
