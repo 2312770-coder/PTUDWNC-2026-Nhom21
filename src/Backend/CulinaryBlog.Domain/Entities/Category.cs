@@ -17,13 +17,13 @@ public class Category : BaseEntity
     protected Category() { }
 
     public static Category Create(string name, string? description = null,
-        string? imageUrl = null, int orderIndex = 0)
+        string? imageUrl = null, int orderIndex = 0, string? slug = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name, nameof(name));
         return new Category
         {
             Name = name.Trim(),
-            Slug = SlugVO.Create(name),
+            Slug = string.IsNullOrWhiteSpace(slug) ? SlugVO.Create(name) : slug.Trim(),
             Description = description?.Trim(),
             ImageUrl = imageUrl,
             OrderIndex = orderIndex,
