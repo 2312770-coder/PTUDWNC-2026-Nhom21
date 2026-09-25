@@ -1,19 +1,75 @@
+// ============================================================================
+// CHỨC NĂNG: FR-RCP-001 - Danh sách công thức nấu ăn (phân trang cơ bản)
+// ============================================================================
+
+using CulinaryBlog.Application.Common.Interfaces;
 using CulinaryBlog.Application.Common.Models;
 using CulinaryBlog.Application.DTOs;
-using CulinaryBlog.Domain.Interfaces;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace CulinaryBlog.Application.Features.Recipes.Queries.GetRecipes;
 
-// FR-RCP-001 + FR-SRCH-002/003/004: Danh sách công thức (phân trang, lọc theo category/độ khó/thời gian, sắp xếp).
-// TODO: Người phụ trách FR-RCP-001 hiện thực handler này.
 public class GetRecipesQueryHandler : IRequestHandler<GetRecipesQuery, PagedResult<RecipeListItemDto>>
 {
-    private readonly IRecipeRepository _recipeRepository;
+    private readonly IApplicationDbContext _dbContext;
 
-    public GetRecipesQueryHandler(IRecipeRepository recipeRepository)
-        => _recipeRepository = recipeRepository;
+    public GetRecipesQueryHandler(IApplicationDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
 
-    public Task<PagedResult<RecipeListItemDto>> Handle(GetRecipesQuery request, CancellationToken ct)
-        => throw new NotImplementedException("FR-RCP-001 (Danh sách công thức) chưa được hiện thực.");
+    public async Task<PagedResult<RecipeListItemDto>> Handle(GetRecipesQuery request, CancellationToken ct)
+    {
+        // 1. Khởi tạo truy vấn AsNoTracking tối ưu hiệu năng
+        var query = _dbContext.Recipes
+            .AsNoTracking()
+            .Include(r => r.Category)
+            .Include(r => r.Author)
+            .Include(r => r.Images)
+            .AsQueryable();
+
+        // 2. Lọc theo danh mục nếu có
+        if (request.CategoryId.HasValue)
+        {
+            query = query.Where(r => r.CategoryId == request.CategoryId.Value);
+        }
+
+        // 3. Lọc theo độ khó nếu có
+        if (request.Difficulty.HasValue)
+        {
+            query = query.Where(r => r.Difficulty == request.Difficulty.Value);
+        }
+
+        // 4. Tính toán tổng số lượng bản ghi
+        var total = await query.CountAsync(ct);
+
+        // 5. Chuẩn hóa tham số phân trang
+        int page = request.Paging.Page is > 0 ? request.Paging.Page.Value : 1;
+        int pageSize = request.Paging.PageSize is > 0 ? request.Paging.PageSize.Value : 10;
+
+        // 6. Lấy dữ liệu theo trang và ánh xạ sang RecipeListItemDto
+        var items = await query
+            .OrderByDescending(r => r.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(r => new RecipeListItemDto(
+                r.Id,
+                r.Title,
+                r.Slug,
+                r.Description,
+                r.PrepTime,
+                r.CookTime,
+                r.Servings,
+                r.Difficulty.ToString(),
+                r.Status.ToString(),
+                r.Images.FirstOrDefault(i => i.IsPrimary) != null ? r.Images.FirstOrDefault(i => i.IsPrimary)!.OriginalUrl : null,
+                r.Category != null ? r.Category.Name : "Khác",
+                r.Author != null ? r.Author.DisplayName : "Đầu bếp",
+                r.PublishedAt
+            ))
+            .ToListAsync(ct);
+
+        return new PagedResult<RecipeListItemDto>(items, page, pageSize, total);
+    }
 }
