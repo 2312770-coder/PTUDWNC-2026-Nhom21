@@ -6,96 +6,142 @@ Web chia sẻ công thức nấu ăn chuẩn vị Việt Nam. Backend .NET 10 (C
 
 ---
 
-## 📌 TIẾN ĐỘ THỰC HIỆN CHI TIẾT THEO TUẦN
+## 📌 LỘ TRÌNH TỔNG THỂ 8 TUẦN (CÂN BẰNG KHỐI LƯỢNG — 7 CHỨC NĂNG / THÀNH VIÊN)
 
-### ✅ TUẦN 2: Khởi tạo Hạ tầng, Dữ liệu mẫu & Tính năng Nền tảng (ĐÃ HOÀN THÀNH & MERGE `main`)
-
-| Thành viên | Mã FR | Tên chức năng | Tên nhánh | Nội dung đã hoàn thành | Trạng thái |
-| :--- | :---: | :--- | :--- | :--- | :---: |
-| **Lê Nhật Tiến** | — | Hạ tầng Docker & Database Seeder | `2312770-LNTien-Database` | Cấu hình 5 container Docker, thiết kế Entity, áp dụng Migration PostgreSQL, viết Seeder nạp 2 role, 2 user, 23 categories, 100 recipes chuẩn dữ liệu Việt. Viết tài liệu `docs/DATABASE.md`. | ✅ Đã merge |
-| **Lê Nhật Tiến** | `FR-RCP-003` | Tạo công thức mới (trạng thái Draft) | `2312770-LNTien-Tao-Cong-Thuc-Moi` | Backend xử lý slug duy nhất, lưu nguyên liệu, các bước nấu, dinh dưỡng. Frontend form `/dashboard/recipes/new` hoàn chỉnh (816 dòng code). | ✅ Đã merge |
-| **Lâm Văn Đức** | `FR-AUTH-001` | Đăng ký tài khoản mới | `2314299-LVDuc-Dang-Ky` | Backend Identity PBKDF2 hash, gán role Author, cấp JWT & Refresh Token. Frontend trang `/register`. | ✅ Đã merge |
-| **Nguyễn Viết Toàn** | `FR-CAT-001` | Xem danh sách danh mục ẩm thực | `2312777-NVToan-Danh-Sach-Danh-Muc` | Backend EF Core query theo `OrderIndex`, đếm số recipe Published. Frontend module `categories.ts` & trang `/categories`. | ✅ Đã merge |
-| **Nguyễn Đình Tuấn** | `FR-FILE-001`<br>`FR-FILE-002` | Upload & Xóa ảnh trên MinIO (S3) | `2312792-ndtuan-upload-minio`<br>`2312792-ndtuan-delete-minio` | `MinioFileStorageService` kiểm tra Magic Bytes, giới hạn 5MB, JPG/PNG/WebP/AVIF. Component UI `ImageUploader.tsx` kéo thả ảnh và xóa ảnh. | ✅ Đã merge |
-
----
-
-### 🚀 TUẦN 3: Xác thực, Danh mục & Chi tiết Công thức (ĐÃ HOÀN THÀNH & MERGE `main`)
-
-> 💡 **Quy tắc**: Mỗi thành viên phụ trách **đúng 1 chức năng trọng tâm** trên nhánh độc lập, tự kiểm tra 0 lỗi trước khi gửi PR cho trưởng nhóm Tiến review và merge.
-
-| # | Thành viên | Mã FR | Tên chức năng | Tên nhánh | Kết quả đã thực hiện & merge vào `main` |
-| :---: | :--- | :---: | :--- | :--- | :--- |
-| 1 | **Lê Nhật Tiến** | `FR-CAT-002` | Xem chi tiết danh mục + bài viết | `2312770-LNTien-Chi-Tiet-Danh-Muc` | Query `GetCategoryBySlug`, nạp công thức Published (D1 Soft Delete). Giao diện `/categories/[slug]` kèm Breadcrumb, Banner danh mục, Lưới RecipeCard và Empty state. |
-| 2 | **Lâm Văn Đức** | `FR-AUTH-002` | Đăng nhập Email + Rate Limiting | `2314299-LVDuc-Dang-Nhap` | Xác thực mật khẩu, xử lý lockout sau 5 lần sai, cấp JWT Access + Refresh token. Cấu hình ASP.NET Core Rate Limiting 5 req/phút chống dò pass. Giao diện `/login`. |
-| 3 | **Nguyễn Viết Toàn** | `FR-CAT-003` | Admin tạo danh mục mới | `2312777-NVToan-Tao-Danh-Muc` | Command `CreateCategory`, kiểm tra trùng tên, sinh slug chuẩn SEO, phân quyền `AdminOnly`. Giao diện trang quản trị thêm danh mục `/admin/categories`. |
-| 4 | **Nguyễn Đình Tuấn** | `FR-RCP-010` | Quản lý các bước nấu (D9) | `2312792-NDTuan-Cac-Buoc-Nau` | Thêm, sửa, xóa bước nấu (D9: server tự sinh `stepNumber` liên tục nếu client không truyền). Component `StepListEditor.tsx` hẹn giờ và upload ảnh MinIO. |
+| Tuần | Trọng tâm công việc | Lê Nhật Tiến (2312770) | Lâm Văn Đức (2314299) | Nguyễn Viết Toàn (2312777) | Nguyễn Đình Tuấn (2312792) |
+| :---: | :--- | :--- | :--- | :--- | :--- |
+| **Tuần 2** | Khởi tạo hạ tầng, Base & Core | Hạ tầng Docker & Seeder, `FR-RCP-003` (Tạo món Draft) | `FR-AUTH-001` (Đăng ký tài khoản) | `FR-CAT-001` (Danh sách danh mục) | `FR-FILE-001`, `FR-FILE-002` (Upload & Xóa ảnh MinIO) |
+| **Tuần 3** | Xác thực, Chi tiết Danh mục & Steps | `FR-CAT-002` (Chi tiết danh mục + recipes) | `FR-AUTH-002` (Đăng nhập Email + Rate Limiter) | `FR-CAT-003` (Admin tạo danh mục mới) | `FR-RCP-010` (Quản lý các bước nấu D9) |
+| **Tuần 4** | Core Recipe Detail, Media, Auth & Ingredients | `FR-RCP-002` (Chi tiết công thức), `FR-RCP-008` (Gallery ảnh) | `FR-AUTH-005` (Đăng xuất), `FR-AUTH-004` (Refresh token rotation) | Redis Caching Danh mục, `FR-CAT-004` (Sửa danh mục D12) | `FR-RCP-009` (Quản lý nguyên liệu D10), `FR-AUTH-006` (Xem Profile) |
+| **Tuần 5** | Cập nhật, Lưu trữ món, Google OAuth & Avatar | `FR-RCP-004` (Sửa công thức), `FR-RCP-006` (Lưu trữ Archive) | `FR-AUTH-003` (Đăng nhập Google OAuth 2.0) | `FR-CAT-005` (Xóa mềm danh mục D1) | `FR-AUTH-007` (Sửa hồ sơ & đổi Avatar MinIO) |
+| **Tuần 6** | Tìm kiếm unaccent, Bộ lọc D8 & Thumbnail Job | `FR-RCP-007` (Xóa mềm công thức D1) | `FR-RCP-005` (Xuất bản công thức - điều kiện D11) | `FR-SRCH-001` (Full-Text Search unaccent), `FR-SRCH-002..004` (Lọc & Sắp xếp D8) | `FR-JOB-002` (Hangfire job resize ảnh thumbnail) |
+| **Tuần 7** | Đánh giá sao, Background Jobs (Email & Sitemap) | `FR-JOB-003` (Hangfire sinh Sitemap XML SEO) | `FR-JOB-001` (Hangfire gửi Email chào mừng) | `FR-INT-001` (Đánh giá sao công thức 1-5 sao) | Tối ưu hóa toàn diện Media MinIO & Kiểm thử tải |
+| **Tuần 8** | Triển khai Production & Nghiệm thu | Cấu hình Docker Production, Nginx SSL HTTPS, Kiểm thử tích hợp E2E, Tổng kết báo cáo & Slide vấn đáp |
 
 ---
 
-### 📅 KẾ HOẠCH TUẦN 4: Chi tiết Món ăn, Quản lý Nguyên liệu, Đăng xuất & Cache
-
-| Thành viên | Mã FR | Tên chức năng | Tên nhánh | Backend cần làm | Frontend cần làm |
-| :--- | :---: | :--- | :--- | :--- | :--- |
-| **Lê Nhật Tiến** | **`FR-RCP-002`** | **Xem chi tiết công thức nấu ăn** | `2312770-LNTien-Chi-Tiet-Cong-Thuc` | `GetRecipeBySlugQueryHandler` (truy vấn đầy đủ nguyên liệu, các bước, ảnh, dinh dưỡng, tác giả) | Trang `/recipes/[slug]`: Hero ảnh lớn, bảng dinh dưỡng, checklist nguyên liệu, timeline các bước nấu kèm hẹn giờ |
-| **Lâm Văn Đức** | `FR-AUTH-005` | Đăng xuất & Thu hồi phiên làm việc | `2314299-LVDuc-Dang-Xuat` | `LogoutCommandHandler` (thu hồi refresh token trong CSDL, vô hiệu hóa phiên) | Nút "Đăng xuất" trên dropdown Navbar, xóa token và điều hướng về trang đăng nhập |
-| **Nguyễn Viết Toàn** | Kỹ thuật Cache | Tích hợp Redis Caching cho Danh mục | `2312777-NVToan-Cache-Danh-Muc` | Inject `ICacheService` vào `GetCategoriesQueryHandler`, kiểm tra cache HIT/MISS (TTL 30 phút). Gọi xóa cache khi tạo danh mục mới | Đo lường và kiểm tra tốc độ phản hồi API danh mục khi có cache Redis |
-| **Nguyễn Đình Tuấn** | `FR-RCP-009` | Quản lý nguyên liệu công thức (D10) | `2312792-NDTuan-Nguyen-Lieu` | Các Command thêm/sửa/xóa nguyên liệu trong `ManageIngredients/*` (D10: cho phép null unit nêm gia vị) | Component `IngredientListEditor.tsx` cho phép thêm, sửa, xóa nguyên liệu và định lượng |
+## 📖 HƯỚNG DẪN CHI TIẾT THEO TỪNG TUẦN
 
 ---
 
-### 📅 KẾ HOẠCH TUẦN 5: Thư viện Ảnh, Hồ sơ Cá nhân, Cập nhật & Xóa Danh mục
+### 1. HƯỚNG DẪN CHI TIẾT TUẦN 2 (ĐÃ HOÀN THÀNH & MERGE MAIN)
 
-| Thành viên | Mã FR | Tên chức năng | Tên nhánh | Backend cần làm | Frontend cần làm |
-| :--- | :---: | :--- | :--- | :--- | :--- |
-| **Lê Nhật Tiến** | `FR-RCP-008` | Quản lý Gallery ảnh công thức | `2312770-LNTien-Gallery-Anh` | Thêm, xóa ảnh bài viết, đổi ảnh đại diện chính `IsPrimary` trong `ManageImages/*` | Component `RecipeGalleryEditor.tsx` xem lưới ảnh, chọn ảnh chính ⭐, xóa ảnh |
-| **Lâm Văn Đức** | `FR-AUTH-004` | Refresh Token Rotation | `2314299-LVDuc-Refresh-Token` | Cấp mới access token từ refresh token còn hạn, phát hiện tấn công tái sử dụng (Reuse Detection) | Axios interceptor trong `client.ts` tự bắt lỗi 401 để refresh token ngầm |
-| **Nguyễn Viết Toàn** | `FR-CAT-004`<br>`FR-CAT-005` | Cập nhật (D12) & Xóa mềm danh mục (D1) | `2312777-NVToan-Quan-Ly-Danh-Muc` | Sửa danh mục (D12: giữ nguyên slug SEO), Xóa mềm danh mục (D1: kiểm tra không có recipe mới cho xóa) | Form sửa danh mục, nút xóa có modal xác nhận trong trang Admin `/admin/categories` |
-| **Nguyễn Đình Tuấn** | `FR-AUTH-006`<br>`FR-AUTH-007` | Xem & Cập nhật Hồ sơ cá nhân | `2312792-NDTuan-Ho-So-Ca-Nhan` | Query xem profile `/auth/me` và Command sửa profile (đổi DisplayName, Bio, AvatarUrl MinIO) | Trang `/profile` xem và chỉnh sửa thông tin tài khoản, upload avatar cá nhân |
+#### 1.1. Lê Nhật Tiến (MSSV: 2312770)
+- **Chức năng 1: Dựng hạ tầng & Database Seeder** (Nhánh: `2312770-LNTien-Database` - Đã merge)
+  - Cấu hình 5 container Docker Compose: PostgreSQL 16 (5432), Redis 7 (6379), MinIO (9000/9001), Seq (5341), MailHog (8025).
+  - Thiết kế Entity Framework Core 10, cấu hình Migration và DatabaseSeeder sinh 2 role (Admin, Author), 2 tài khoản mẫu, 23 categories và 100 recipes chuẩn văn hóa ẩm thực Việt.
+  - Viết tài liệu hướng dẫn CSDL chi tiết tại `docs/DATABASE.md`.
+- **Chức năng 2: Tạo công thức mới trạng thái Draft (FR-RCP-003)** (Nhánh: `2312770-LNTien-Tao-Cong-Thuc-Moi` - Đã merge)
+  - Backend: `CreateRecipeCommandHandler` xác thực `CurrentUser`, kiểm tra danh mục, tự sinh slug duy nhất (chống trùng lặp URL), nạp nutrition, nguyên liệu và các bước. Đăng ký `POST /api/v1/recipes` với quyền `AuthorOrAdmin`.
+  - Frontend: Trang `/dashboard/recipes/new/page.tsx` (816 dòng code) với Form thông tin chung, danh mục, bảng dinh dưỡng, danh sách nguyên liệu và các bước thực hiện.
 
----
+#### 1.2. Lâm Văn Đức (MSSV: 2314299)
+- **Chức năng: Đăng ký tài khoản mới (FR-AUTH-001)** (Nhánh: `2314299-LVDuc-Dang-Ky` - Đã merge)
+  - Backend: `RegisterCommandHandler` kiểm tra email trùng, tạo user qua ASP.NET Core Identity (hash PBKDF2), gán role "Author", sinh JWT Access Token và Refresh Token lưu database. `RegisterCommandValidator` kiểm tra email và mật khẩu $\ge 8$ ký tự.
+  - Frontend: Trang `/register` (`app/(auth)/register/page.tsx`): Form Email, DisplayName, Password, Confirm Password, validate trực quan và liên kết chuyển trang đăng nhập.
 
-### 📅 KẾ HOẠCH TUẦN 6: Tìm kiếm Thông minh, Sửa/Lưu trữ/Xuất bản Công thức & Google OAuth
+#### 1.3. Nguyễn Viết Toàn (MSSV: 2312777)
+- **Chức năng: Xem danh sách danh mục (FR-CAT-001)** (Nhánh: `2312777-NVToan-Danh-Sach-Danh-Muc` - Đã merge)
+  - Backend: `GetCategoriesQueryHandler` truy vấn danh mục theo `OrderIndex`, đếm số lượng công thức Published (`Status == RecipeStatus.Published && !IsDeleted`). Đăng ký `GET /api/v1/categories`.
+  - Frontend: Module `src/Frontend/lib/api/categories.ts` hàm `getAll()` và hiển thị danh mục tại trang chủ, trang `/categories`.
 
-| Thành viên | Mã FR | Tên chức năng | Tên nhánh | Backend cần làm | Frontend cần làm |
-| :--- | :---: | :--- | :--- | :--- | :--- |
-| **Lê Nhật Tiến** | `FR-RCP-004`<br>`FR-RCP-006` | Cập nhật thông tin & Lưu trữ (Archive) | `2312770-LNTien-Sua-Luu-Tru-Cong-Thuc` | Sửa thông tin chung công thức và lệnh chuyển đổi trạng thái `ArchiveRecipe` (chỉ tác giả hoặc Admin) | Giao diện chỉnh sửa công thức `/dashboard/recipes/[id]/edit` và nút lưu trữ bài viết |
-| **Lâm Văn Đức** | `FR-AUTH-003`<br>`FR-RCP-005` | Đăng nhập Google & Xuất bản (D11) | `2314299-LVDuc-Google-Publish` | Xác thực Google OAuth 2.0 (GoogleLogin) + Kiểm tra điều kiện xuất bản D11 (ít nhất 1 bước và 1 nguyên liệu) | Nút "Đăng nhập với Google" tại `/login` và nút Xuất bản/Hủy xuất bản trong Dashboard tác giả |
-| **Nguyễn Viết Toàn** | `FR-SRCH-001`<br>`FR-SRCH-002..004` | Full-Text Search unaccent & Bộ lọc đa tiêu chí | `2312777-NVToan-Tim-Kiem-Loc` | PostgreSQL Full-Text Search không dấu (`tsvector`/`unaccent`), lọc độ khó, thời gian nấu, sắp xếp dual-syntax D8 | Giao diện thanh tìm kiếm và sidebar bộ lọc đa tiêu chí tại trang `/recipes` |
-| **Nguyễn Đình Tuấn** | `FR-JOB-002` | Background Job nén & resize ảnh | `2312792-NDTuan-Resize-Anh-Job` | Hangfire Job tự động resize ảnh công thức thành thumbnail 400x300 và lưu link `thumbnailUrl` | Hiển thị ảnh thumbnail tối ưu tốc độ tải trên lưới `RecipeCard` |
-
----
-
-### 📅 KẾ HOẠCH TUẦN 7: Đánh giá Sao, Xóa mềm Công thức, Background Job Email & Sitemap SEO
-
-| Thành viên | Mã FR | Tên chức năng | Tên nhánh | Backend cần làm | Frontend cần làm |
-| :--- | :---: | :--- | :--- | :--- | :--- |
-| **Lê Nhật Tiến** | `FR-RCP-007`<br>`FR-JOB-003` | Xóa mềm công thức (D1) & Sinh Sitemap XML | `2312770-LNTien-Xoa-Mem-Sitemap` | Soft Delete Recipe (`IsDeleted = true`) + Hangfire Job định kỳ sinh file `sitemap.xml` chuẩn SEO | Nút xóa công thức trong danh sách bài và route `/sitemap.xml` phục vụ công cụ tìm kiếm |
-| **Lâm Văn Đức** | `FR-JOB-001` | Background Job gửi Email chào mừng | `2314299-LVDuc-Email-Job` | Hangfire Job tích hợp MailKit gửi email chào mừng thành viên mới đăng ký qua hòm thư ảo MailHog (:8025) | Kiểm tra nhận email kích hoạt/chào mừng trên giao diện MailHog |
-| **Nguyễn Viết Toàn** | `FR-INT-001` | Đánh giá sao công thức (Rating) | `2312777-NVToan-Danh-Gia-Sao` | Command chấm điểm rating 1-5 sao, tính điểm trung bình và số lượt đánh giá của món ăn | Component chấm sao tương tác trực tiếp trên trang chi tiết công thức |
-| **Nguyễn Đình Tuấn** | Tối ưu hóa & Kiểm thử | Tích hợp hoàn thiện Media & Profile | `2312792-NDTuan-Kiem-Thu-Media` | Kiểm thử toàn diện bucket MinIO, xử lý ảnh lỗi, tối ưu tốc độ phản hồi ảnh S3 | Kiểm tra hiển thị hình ảnh đại diện, avatar trên toàn bộ các trang giao diện |
+#### 1.4. Nguyễn Đình Tuấn (MSSV: 2312792)
+- **Chức năng: Upload & Xóa ảnh trên MinIO (FR-FILE-001 & FR-FILE-002)** (Nhánh: `2312792-ndtuan-upload-minio` & `2312792-ndtuan-delete-minio` - Đã merge)
+  - Backend: `MinioFileStorageService` kiểm tra Magic Bytes file, giới hạn $\le 5$MB, định dạng JPG/PNG/WebP/AVIF, upload vào bucket `culinary-blog` và hàm xóa file `DeleteAsync`. Endpoints `POST /api/v1/files/upload` và `DELETE /api/v1/files`.
+  - Frontend: Component dùng chung `src/Frontend/components/ui/ImageUploader.tsx`: kéo thả ảnh, preview ảnh, hiển thị link sau upload và nút xóa ảnh có xác nhận.
 
 ---
 
-### 🏁 TUẦN 8: Triển khai Hệ thống (Deployment), Tối ưu NFR & Nghiệm thu Báo cáo
-- **Hạ tầng Production**: Cấu hình Docker Compose môi trường Production, Nginx Reverse Proxy, SSL HTTPS, kiểm tra phân quyền và CORS.
-- **Kiểm thử tích hợp (End-to-End)**: Chạy toàn bộ kịch bản người dùng từ Đăng ký ➜ Tạo món ➜ Thêm bước/nguyên liệu/ảnh ➜ Xuất bản ➜ Tìm kiếm ➜ Đánh giá sao.
-- **Hoàn thiện tài liệu**: Tổng kết tài liệu báo cáo đồ án môn học, kiểm tra đối chiếu đặc tả SRS v1.0.0 và chuẩn bị slide thuyết trình vấn đáp.
+### 2. HƯỚNG DẪN CHI TIẾT TUẦN 3 (ĐÃ HOÀN THÀNH & MERGE MAIN)
+
+#### 2.1. Lê Nhật Tiến (MSSV: 2312770)
+- **Chức năng: Xem chi tiết danh mục kèm bài viết (FR-CAT-002)** (Nhánh: `2312770-LNTien-Chi-Tiet-Danh-Muc` - Đã merge)
+  - Backend: Tạo DTO `CategoryDetailDto` kèm danh sách `IReadOnlyList<RecipeListItemDto> Recipes`. Query `GetCategoryBySlugQuery` và Handler nạp các bài viết có `Status == RecipeStatus.Published && !IsDeleted`, sắp xếp giảm dần theo ngày xuất bản. Endpoint `GET /api/v1/categories/{slug}`.
+  - Frontend: Cập nhật `categoriesApi.getBySlug(slug)`. Tạo trang `app/(public)/categories/[slug]/page.tsx` gồm Breadcrumb, Banner danh mục, Lưới `RecipeCard`, xử lý Empty state và Not Found 404.
+
+#### 2.2. Lâm Văn Đức (MSSV: 2314299)
+- **Chức năng: Đăng nhập Email/Mật khẩu + Rate Limiting (FR-AUTH-002)** (Nhánh: `2314299-LVDuc-Dang-Nhap` - Đã merge)
+  - Backend: `LoginCommandHandler` kiểm tra tài khoản khóa (`IsLockedOutAsync`), kiểm tra mật khẩu, đếm số lần sai và tự động khóa 15 phút sau 5 lần thất bại. Sinh cặp token mới. Cấu hình ASP.NET Core `AddRateLimiter` 5 req/phút chống Brute-Force tại `API/DependencyInjection.cs`.
+  - Frontend: Trang `app/(auth)/login/page.tsx` form đăng nhập, lưu token, cập nhật trạng thái User trên Navbar.
+
+#### 2.3. Nguyễn Viết Toàn (MSSV: 2312777)
+- **Chức năng: Admin tạo danh mục mới (FR-CAT-003)** (Nhánh: `2312777-NVToan-Tao-Danh-Muc` - Đã merge)
+  - Backend: `CreateCategoryCommandHandler` kiểm tra tên trùng lặp, tự sinh slug chuẩn SEO (bỏ dấu tiếng Việt, nối bằng gạch ngang), lưu CSDL. Endpoint `POST /api/v1/categories` phân quyền `AdminOnly`.
+  - Frontend: Trang quản trị `app/(admin)/admin/categories/page.tsx` gồm bảng danh mục, Form nhập tên, mô tả, thứ tự hiển thị và upload ảnh.
+
+#### 2.4. Nguyễn Đình Tuấn (MSSV: 2312792)
+- **Chức năng: Quản lý các bước nấu ăn (FR-RCP-010)** (Nhánh: `2312792-NDTuan-Cac-Buoc-Nau` - Đã merge)
+  - Backend: Thêm, sửa, xóa bước nấu trong `Features/Recipes/Commands/ManageSteps/*`. Tuân thủ **Quyết định D9**: `Title` bắt buộc, `StepNumber` tùy chọn (`int?`) — nếu client không truyền thì server tự động lấy số lớn nhất + 1. Tự động renumber thứ tự khi xóa bước. Endpoints `POST/PUT/DELETE /api/v1/recipes/{id}/steps`.
+  - Frontend: Component `StepListEditor.tsx` hiển thị danh sách các bước có hẹn giờ, hướng dẫn và tích hợp upload ảnh MinIO.
 
 ---
 
-## 👥 Phân công tổng thể (7 chức năng / thành viên)
+### 3. HƯỚNG DẪN CHI TIẾT TUẦN 4 (CÂN BẰNG KHỐI LƯỢNG — CHUẨN BỊ LÀM)
 
-| MSSV | Họ và tên | Chuyên môn phụ trách | Danh sách 7 chức năng | Hướng dẫn riêng |
-| :---: | :--- | :--- | :--- | :---: |
-| **2312770** | **Lê Nhật Tiến** *(Trưởng nhóm)* | **Core Recipe & Author Experience** | `FR-RCP-003`, `FR-CAT-002`, `FR-RCP-002`, `FR-RCP-008`, `FR-RCP-004`, `FR-RCP-006`, `FR-RCP-007` & `FR-JOB-003` | [Xem file](./docs/thanh-vien/2312770_LeNhatTien.md) |
-| **2314299** | **Lâm Văn Đức** | **Authentication & Security** | `FR-AUTH-001`, `FR-AUTH-002`, `FR-AUTH-005`, `FR-AUTH-004`, `FR-AUTH-003`, `FR-RCP-005`, `FR-JOB-001` | [Xem file](./docs/thanh-vien/2314299_LamVanDuc.md) |
-| **2312777** | **Nguyễn Viết Toàn** | **Category, Cache & Search Engine** | `FR-CAT-001`, `FR-CAT-003`, Caching Danh mục, `FR-CAT-004`, `FR-CAT-005`, `FR-SRCH-001..004`, `FR-INT-001` | [Xem file](./docs/thanh-vien/2312777_NguyenVietToan.md) |
-| **2312792** | **Nguyễn Đình Tuấn** | **Storage, Recipe Details & Profile** | `FR-FILE-001`, `FR-FILE-002`, `FR-RCP-010`, `FR-RCP-009`, `FR-AUTH-006`, `FR-AUTH-007`, `FR-JOB-002` | [Xem file](./docs/thanh-vien/2312792_NguyenDinhTuan.md) |
+> 💡 **Quy tắc**: Mỗi thành viên tự tạo nhánh mới từ `main` mới nhất, code và kiểm tra 0 lỗi trước khi gửi PR cho trưởng nhóm Tiến.
+
+#### 3.1. Lê Nhật Tiến (MSSV: 2312770)
+- **Chức năng 1: Xem chi tiết công thức nấu ăn (FR-RCP-002)** (Nhánh: `2312770-LNTien-Chi-Tiet-Cong-Thuc`)
+  - Backend: Viết `GetRecipeBySlugQueryHandler`: nạp quan hệ Category, Author, Steps, Ingredients, Images, Nutrition. Phân quyền xem Draft/Archived. Endpoint `GET /api/v1/recipes/{slug}`.
+  - Frontend: Hàm `recipesApi.getBySlug(slug)` và trang `src/Frontend/app/(public)/recipes/[slug]/page.tsx` (Hero banner, dinh dưỡng, checklist nguyên liệu, timeline các bước nấu).
+- **Chức năng 2: Quản lý gallery ảnh công thức (FR-RCP-008)** (Nhánh: `2312770-LNTien-Gallery-Anh`)
+  - Backend: Commands `AddRecipeImageCommand`, `DeleteRecipeImageCommand`, `SetPrimaryImageCommand` trong `ManageImages/*`. Endpoints `POST/DELETE/PUT /api/v1/recipes/{id}/images`.
+  - Frontend: Component `RecipeGalleryEditor.tsx`: lưới ảnh thumbnail, gắn sao ảnh chính ⭐, xóa ảnh 🗑️ và tích hợp MinIO upload.
+
+#### 3.2. Lâm Văn Đức (MSSV: 2314299)
+- **Chức năng 1: Đăng xuất & Thu hồi phiên làm việc (FR-AUTH-005)** (Nhánh: `2314299-LVDuc-Dang-Xuat`)
+  - Backend: `LogoutCommandHandler` tìm và thu hồi/xóa refresh token trong CSDL. Endpoint `POST /api/v1/auth/logout`.
+  - Frontend: Nút "Đăng xuất" trên Navbar, xóa token và cập nhật trạng thái giao diện.
+- **Chức năng 2: Refresh Token Rotation (FR-AUTH-004)** (Nhánh: `2314299-LVDuc-Refresh-Token`)
+  - Backend: `RefreshTokenCommandHandler` xác thực token cũ, thu hồi và cấp cặp token mới (phát hiện tái sử dụng Reuse Detection). Endpoint `POST /api/v1/auth/refresh`.
+  - Frontend: Cấu hình Axios Interceptor trong `client.ts` tự bắt lỗi 401 để refresh ngầm và thử lại request cũ.
+
+#### 3.3. Nguyễn Viết Toàn (MSSV: 2312777)
+- **Chức năng 1: Tích hợp Redis Caching cho Danh mục** (Nhánh: `2312777-NVToan-Cache-Danh-Muc`)
+  - Backend: Inject `ICacheService` vào `GetCategoriesQueryHandler`, kiểm tra Cache HIT/MISS, lưu cache TTL 30 phút. Xóa cache trong `CreateCategoryCommandHandler`.
+  - Kiểm thử: Đo lường tốc độ phản hồi qua Seq và Scalar (< 5ms khi HIT).
+- **Chức năng 2: Admin cập nhật danh mục (FR-CAT-004)** (Nhánh: `2312777-NVToan-Sua-Danh-Muc`)
+  - Backend: `UpdateCategoryCommandHandler` cập nhật tên, mô tả, ảnh, thứ tự nhưng **giữ nguyên slug SEO theo Quyết định D12**. Xóa cache Redis sau khi sửa. Endpoint `PUT /api/v1/categories/{id}` (`AdminOnly`).
+  - Frontend: Nút "Sửa" và Modal cập nhật thông tin danh mục trong trang `/admin/categories`.
+
+#### 3.4. Nguyễn Đình Tuấn (MSSV: 2312792)
+- **Chức năng 1: Quản lý nguyên liệu công thức (FR-RCP-009)** (Nhánh: `2312792-NDTuan-Nguyen-Lieu`)
+  - Backend: Thư mục `ManageIngredients/*`: thêm, sửa, xóa nguyên liệu. Tuân thủ **Quyết định D10**: cho phép null đơn vị gia vị nêm nếm. Endpoints `POST/PUT/DELETE /api/v1/recipes/{id}/ingredients`.
+  - Frontend: Component `IngredientListEditor.tsx` bảng danh sách nguyên liệu, định lượng, ghi chú và các nút thao tác.
+- **Chức năng 2: Xem thông tin hồ sơ cá nhân (FR-AUTH-006)** (Nhánh: `2312792-NDTuan-Xem-Ho-So`)
+  - Backend: `GetProfileQueryHandler` lấy thông tin user hiện tại từ `ICurrentUser` và Identity. Endpoint `GET /api/v1/auth/me`.
+  - Frontend: Trang cá nhân `/profile` hiển thị Avatar lớn, Tên hiển thị, Email, Bio và Roles.
 
 ---
 
-## 🛠️ Quy tắc nhánh Git & Quy trình làm việc
+### 4. KẾ HOẠCH TỔNG QUAN CÁC TUẦN TIẾP THEO (TUẦN 5 → TUẦN 8)
+
+* **Tuần 5**:
+  - **Tiến**: `FR-RCP-004` (Sửa thông tin công thức) & `FR-RCP-006` (Lưu trữ công thức Archive).
+  - **Đức**: `FR-AUTH-003` (Đăng nhập Google OAuth 2.0).
+  - **Toàn**: `FR-CAT-005` (Admin xóa mềm danh mục - tuân thủ D1 không có recipe mới cho xóa).
+  - **Tuấn**: `FR-AUTH-007` (Cập nhật hồ sơ cá nhân, đổi DisplayName, Bio và upload Avatar MinIO).
+
+* **Tuần 6**:
+  - **Tiến**: `FR-RCP-007` (Xóa mềm công thức theo D1 Soft Delete).
+  - **Đức**: `FR-RCP-005` (Xuất bản công thức - tuân thủ điều kiện D11: $\ge 1$ bước và $\ge 1$ nguyên liệu).
+  - **Toàn**: `FR-SRCH-001` (Full-Text Search unaccent) & `FR-SRCH-002..004` (Lọc đa tiêu chí, sắp xếp dual-syntax D8).
+  - **Tuấn**: `FR-JOB-002` (Hangfire background job nén & resize ảnh thumbnail).
+
+* **Tuần 7**:
+  - **Tiến**: `FR-JOB-003` (Hangfire background job tự động sinh sitemap.xml SEO).
+  - **Đức**: `FR-JOB-001` (Hangfire gửi Email chào mừng thành viên mới qua MailHog).
+  - **Toàn**: `FR-INT-001` (Đánh giá sao công thức 1-5 sao, tính rating trung bình).
+  - **Tuấn**: Tối ưu hóa toàn diện Media MinIO, xử lý ảnh lỗi và kiểm thử tải.
+
+* **Tuần 8**:
+  - Triển khai môi trường Production (Docker Compose + Nginx Reverse Proxy, cấu hình HTTPS SSL).
+  - Kiểm thử tích hợp toàn diện luồng người dùng (E2E Testing).
+  - Tổng kết nghiệm thu, hoàn thiện tài liệu báo cáo đồ án và slide thuyết trình vấn đáp.
+
+---
+
+## 🛠️ QUY TẮC NHÁNH GIT & QUY TRÌNH LÀM VIỆC
 
 > ⚠️ **Quan trọng**: Thành viên **KHÔNG tự merge vào `main`**. Chỉ có trưởng nhóm **Lê Nhật Tiến (2312770)** mới được merge sau khi review code và xác nhận không xung đột.
 
@@ -121,7 +167,7 @@ git push -u origin <Ten-Nhanh-Cua-Ban>
 
 ---
 
-## 💻 Hướng dẫn chạy dự án nhanh
+## 💻 HƯỚNG DẪN CHẠY DỰ ÁN NHANH
 
 ```powershell
 # 1. Khởi động 5 dịch vụ hạ tầng Docker:

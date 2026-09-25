@@ -20,10 +20,10 @@
 | 1 | **FR-CAT-001** | Xem danh sách danh mục ẩm thực | `Features/Categories/Queries/GetCategories/*` | Trang `/categories` & Menu Navbar |
 | 2 | **FR-CAT-003** | Admin tạo danh mục mới | `Features/Categories/Commands/CreateCategory/*` | Trang Admin `/admin/categories` |
 | 3 | **Kỹ thuật Cache** | Tích hợp Redis Caching cho Danh mục | `Features/Categories/Queries/GetCategories/*` | Đo lường thời gian phản hồi API |
-| 4 | **FR-CAT-004**<br>**FR-CAT-005** | Cập nhật (D12) & Xóa mềm danh mục (D1) | `Features/Categories/Commands/UpdateCategory/*`<br>`Features/Categories/Commands/DeleteCategory/*` | Form sửa danh mục & nút xóa trong Admin |
-| 5 | **FR-SRCH-001** | Tìm kiếm toàn văn (PostgreSQL unaccent) | `Features/Recipes/Queries/SearchRecipes/*` | Trang kết quả tìm kiếm `/recipes?q=...` |
-| 6 | **FR-SRCH-002..004** | Lọc đa tiêu chí, sắp xếp D8, phân trang | `Features/Recipes/Queries/GetRecipes/*` | Sidebar bộ lọc độ khó/thời gian trên `/recipes` |
-| 7 | **FR-INT-001** | Đánh giá sao công thức (Rating 1-5) | `Features/Recipes/Commands/RateRecipe/*` | Component chấm sao trên trang chi tiết món ăn |
+| 4 | **FR-CAT-004** | Admin cập nhật danh mục (D12) | `Features/Categories/Commands/UpdateCategory/*` | Form sửa danh mục trong Admin |
+| 5 | **FR-CAT-005** | Admin xóa mềm danh mục (D1) | `Features/Categories/Commands/DeleteCategory/*` | Nút xóa có modal cảnh báo trong Admin |
+| 6 | **FR-SRCH-001** | Tìm kiếm toàn văn (PostgreSQL unaccent) | `Features/Recipes/Queries/SearchRecipes/*` | Trang kết quả tìm kiếm `/recipes?q=...` |
+| 7 | **FR-SRCH-002..004**<br>**FR-INT-001** | Lọc đa tiêu chí & Đánh giá sao | `Features/Recipes/Queries/GetRecipes/*`<br>`Features/Recipes/Commands/RateRecipe/*` | Sidebar bộ lọc `/recipes` & Component Rating |
 
 ---
 
@@ -38,9 +38,9 @@ Tuần 3 (Đã hoàn thành & merge main):
 
 Tuần 4 (Tuần tới):
   🔲 Tích hợp Redis Caching cho Danh mục (Tự inject ICacheService vào GetCategoriesQueryHandler, cache HIT/MISS, TTL 30 phút)
+  🔲 FR-CAT-004 — Admin cập nhật danh mục (Tuân thủ D12: giữ nguyên slug SEO, xóa cache Redis)
 
 Tuần 5:
-  🔲 FR-CAT-004 — Admin cập nhật danh mục (Tuân thủ D12: giữ nguyên slug SEO, xóa cache Redis)
   🔲 FR-CAT-005 — Admin xóa mềm danh mục (Tuân thủ D1: kiểm tra không có recipes mới cho xóa)
 
 Tuần 6:
@@ -58,34 +58,79 @@ Tuần 8:
 
 ## 4. HƯỚNG DẪN CHI TIẾT TUẦN 2 (ĐÃ HOÀN THÀNH)
 
+> ⚠️ **Quy ước nhánh**: Mỗi chức năng làm trên **một nhánh riêng** tự tạo từ `main`, cú pháp: `2312777-NVToan-<Ten-Chuc-Nang>`. **Không tự merge vào `main`** — báo trưởng nhóm Tiến để Tiến review và merge giúp.
+
+---
+
 ### Chức năng: Xem danh sách danh mục (FR-CAT-001)
-- **Nhánh**: `2312777-NVToan-Danh-Sach-Danh-Muc` (Đã merge vào `main`)
-- **Backend**:
-  - `GetCategoriesQueryHandler`: Truy vấn danh mục theo `OrderIndex`, đếm số lượng bài viết trạng thái `Published` và chưa xóa mềm `!IsDeleted`.
-  - Đăng ký endpoint `GET /api/v1/categories`.
-- **Frontend**:
-  - Module `src/Frontend/lib/api/categories.ts` với hàm `getAll()`.
-  - Hiển thị danh mục tại trang chủ và trang danh mục `/categories`.
+
+#### Bước 1: Tạo nhánh mới từ `main`
+```powershell
+git checkout main
+git pull origin main
+git checkout -b 2312777-NVToan-Danh-Sach-Danh-Muc
+```
+
+#### Bước 2: Hiện thực Backend & Hoàn thiện Frontend
+1. Backend: Xem file `src/Backend/CulinaryBlog.Application/Features/Categories/Queries/GetCategories/GetCategoriesQueryHandler.cs` (hiện tại là khung mẫu ném `NotImplementedException`). Bạn hiện thực truy vấn EF Core lấy danh sách danh mục theo `OrderIndex`, đếm số lượng công thức Published và ánh xạ sang `CategoryDto`. Đăng ký endpoint GET `/api/v1/categories` trong `CategoriesEndpoints.cs`.
+2. Frontend: Hiện thực hàm `categoriesApi.getAll()` trong `src/Frontend/lib/api/categories.ts` để gọi API Backend. Tạo trang xem toàn bộ danh mục tại `src/Frontend/app/(public)/categories/page.tsx` hiển thị lưới các danh mục dạng card với hình ảnh đại diện, mô tả và số lượng công thức thực tế.
+
+#### Bước 3: Kiểm tra và đẩy nhánh lên GitHub
+```powershell
+dotnet build CulinaryBlog.slnx
+cd src\Frontend; npm run lint; cd ..\..
+
+git add .
+git commit -m "category: hien thuc FR-CAT-001 danh sach danh muc"
+git push -u origin 2312777-NVToan-Danh-Sach-Danh-Muc
+```
+Nhắn trưởng nhóm Tiến qua Zalo để Tiến review và merge vào `main`.
 
 ---
 
 ## 5. HƯỚNG DẪN CHI TIẾT TUẦN 3 (ĐÃ HOÀN THÀNH)
 
+> ⚠️ **Quy ước nhánh**: Mỗi chức năng làm trên **một nhánh riêng** tự tạo từ `main`, cú pháp: `2312777-NVToan-<Ten-Chuc-Nang>`. Sau khi code xong và test build không lỗi, gửi PR để trưởng nhóm Tiến review và merge.
+
+---
+
 ### Chức năng: Admin tạo danh mục mới (FR-CAT-003)
-- **Nhánh**: `2312777-NVToan-Tao-Danh-Muc` (Đã merge vào `main`)
-- **Backend**:
-  - `CreateCategoryCommandHandler`: Kiểm tra tên danh mục trùng lặp, tự sinh slug chuẩn SEO (bỏ dấu tiếng Việt, nối bằng gạch ngang), lưu CSDL.
-  - Phân quyền endpoint `POST /api/v1/categories` với chính sách `AdminOnly`.
-- **Frontend**:
-  - Trang quản trị `src/Frontend/app/(admin)/admin/categories/page.tsx`: Form thêm danh mục, thứ tự hiển thị và upload ảnh.
+
+#### Bước 1: Tạo nhánh mới từ `main`
+```powershell
+git checkout main
+git pull origin main
+git checkout -b 2312777-NVToan-Tao-Danh-Muc
+```
+
+#### Bước 2: Hiện thực Backend & Frontend
+1. Backend: Mở file `src/Backend/CulinaryBlog.Application/Features/Categories/Commands/CreateCategory/CreateCategoryCommandHandler.cs`.
+   - Kiểm tra tên danh mục không trùng lặp: `await _categoryRepository.Query().AnyAsync(c => c.Name == request.Name)`.
+   - Tạo danh mục: `var category = Category.Create(request.Name, request.Description, request.ImageUrl, request.OrderIndex)`.
+   - Lưu qua `_categoryRepository.AddAsync(category, ct)` và `SaveChangesAsync`.
+   - Trả về `CategoryDto`.
+2. Frontend: Tạo trang quản trị danh mục `src/Frontend/app/(admin)/categories/page.tsx` có bảng danh mục hiện có và form nhập tên danh mục, mô tả, ảnh đại diện và thứ tự hiển thị `OrderIndex`.
+
+#### Bước 3: Kiểm tra và đẩy nhánh lên GitHub
+```powershell
+dotnet build CulinaryBlog.slnx
+cd src\Frontend; npx tsc --noEmit; cd ..\..
+
+git add .
+git commit -m "category: hien thuc FR-CAT-003 tao danh muc moi"
+git push -u origin 2312777-NVToan-Tao-Danh-Muc
+```
+Nhắn trưởng nhóm Tiến qua Zalo để Tiến review và merge vào `main`.
 
 ---
 
 ## 6. HƯỚNG DẪN CHI TIẾT TUẦN 4 (CHUẨN BỊ LÀM)
 
-> ⚠️ **Quy ước nhánh**: Làm trên nhánh riêng `2312777-NVToan-Cache-Danh-Muc`.
+> ⚠️ **Quy ước nhánh**: Mỗi chức năng làm trên một nhánh riêng.
 
-### Chức năng trọng tâm: Tích hợp Redis Caching cho Danh mục
+---
+
+### Chức năng 1: Tích hợp Redis Caching cho Danh mục
 
 #### Bước 1: Tạo nhánh mới từ `main`
 ```powershell
@@ -108,3 +153,58 @@ git checkout -b 2312777-NVToan-Cache-Danh-Muc
 #### Bước 3: Kiểm thử
 - Chạy Backend, gọi API `GET /api/v1/categories` lần 1 (Cache MISS, xem log Seq).
 - Gọi lại lần 2 (Cache HIT, tốc độ phản hồi < 5ms).
+
+#### Bước 4: Kiểm tra và đẩy nhánh lên GitHub
+```powershell
+dotnet build CulinaryBlog.slnx
+cd src\Frontend; npx tsc --noEmit; cd ..\..
+
+git add .
+git commit -m "cache: tich hop redis caching cho danh muc TTL 30 phut"
+git push -u origin 2312777-NVToan-Cache-Danh-Muc
+```
+
+---
+
+### Chức năng 2: Admin cập nhật danh mục (FR-CAT-004)
+
+#### Bước 1: Tạo nhánh mới từ `main`
+```powershell
+git checkout main
+git pull origin main
+git checkout -b 2312777-NVToan-Sua-Danh-Muc
+```
+
+#### Bước 2: Hiện thực Backend
+1. Thư mục `Features/Categories/Commands/UpdateCategory/`:
+   - `UpdateCategoryCommand(Guid Id, string Name, string? Description, string? ImageUrl, int? OrderIndex)`: `IRequest<CategoryDto>`
+   - `UpdateCategoryCommandHandler`:
+     - Tìm category theo `Id` (chưa bị xóa mềm `!IsDeleted`). Nếu không thấy ném `NotFoundException`.
+     - Tuân thủ **Quyết định D12**: Cập nhật Name, Description, ImageUrl, OrderIndex nhưng **giữ nguyên Slug** để bảo toàn SEO URL.
+     - Lưu CSDL và xóa cache Redis `await _cacheService.RemoveAsync("categories:all", ct)`.
+2. Đăng ký endpoint `PUT /api/v1/categories/{id}` trong `CategoriesEndpoints.cs` (`RequireAuthorization("AdminOnly")`).
+
+#### Bước 3: Hiện thực Frontend
+1. Mở trang quản trị `/admin/categories`:
+   - Thêm nút "Sửa" trên từng dòng danh mục.
+   - Bấm vào hiển thị Modal sửa thông tin (Tên, Mô tả, OrderIndex, ImageUrl).
+   - Gọi API `PUT /api/v1/categories/{id}` và tải lại bảng danh mục.
+
+#### Bước 4: Kiểm tra và đẩy nhánh lên GitHub
+```powershell
+dotnet build CulinaryBlog.slnx
+cd src\Frontend; npx tsc --noEmit; cd ..\..
+
+git add .
+git commit -m "category: hien thuc FR-CAT-004 admin cap nhat danh muc"
+git push -u origin 2312777-NVToan-Sua-Danh-Muc
+```
+
+---
+
+## 7. Tiêu Chí Nghiệm Thu (Definition of Done)
+- [ ] Endpoint `GET /api/v1/categories` trả về đúng danh sách và cache Redis hoạt động mượt mà.
+- [ ] Endpoint `POST /api/v1/categories` tạo được danh mục mới kèm slug tự động chuẩn SEO.
+- [ ] Endpoint `PUT /api/v1/categories/{id}` cập nhật thông tin thành công và bảo toàn slug D12.
+- [ ] Trang `/categories` và `/admin/categories` hiển thị trực quan và hoạt động chính xác.
+- [ ] Các nhánh chức năng đã được đẩy lên GitHub và merge vào `main`.
