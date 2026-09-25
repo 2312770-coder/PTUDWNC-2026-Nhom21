@@ -39,6 +39,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseCors("NextJsPolicy");   // CORS phải đứng trước Authentication
+app.UseRateLimiter();          // Giới hạn tần suất request (DECISIONS D7 & NFR-SEC-003)
 app.UseAuthentication();       // xác thực trước
 app.UseAuthorization();        // rồi mới phân quyền
 

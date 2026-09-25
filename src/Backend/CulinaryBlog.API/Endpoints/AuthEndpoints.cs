@@ -1,4 +1,5 @@
 using CulinaryBlog.Application.Common.Models;
+using CulinaryBlog.Application.Features.Auth.Commands.Login;
 using CulinaryBlog.Application.Features.Auth.Commands.Register;
 using MediatR;
 
@@ -32,6 +33,30 @@ public static class AuthEndpoints
         .WithName("RegisterUser")
         .WithSummary("Đăng ký tài khoản mới (FR-AUTH-001)");
 
+        group.MapPost("/login", async (
+            LoginRequest request,
+            HttpContext httpContext,
+            IMediator mediator,
+            CancellationToken cancellationToken) =>
+        {
+            var clientIp = httpContext.Connection.RemoteIpAddress?.ToString();
+            var command = new LoginCommand(
+                Email: request.Email,
+                Password: request.Password,
+                ClientIp: clientIp);
+
+            var result = await mediator.Send(command, cancellationToken);
+            return Results.Ok(ApiResponse.Ok(new
+            {
+                result.AccessToken,
+                result.RefreshToken,
+                result.User
+            }));
+        })
+        .RequireRateLimiting("LoginRateLimitPolicy")
+        .WithName("LoginUser")
+        .WithSummary("Đăng nhập bằng Email và Mật khẩu (FR-AUTH-002)");
+
         return app;
     }
 
@@ -40,4 +65,8 @@ public static class AuthEndpoints
         string Password,
         string DisplayName,
         string? UserName);
+
+    public sealed record LoginRequest(
+        string Email,
+        string Password);
 }

@@ -30,6 +30,48 @@ public static class DependencyInjection
             });
         });
 
+        // ── Rate Limiting (DECISIONS D7 & NFR-SEC-003) ────────────────────────
+        services.AddRateLimiter(options =>
+        {
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+            options.OnRejected = async (context, token) =>
+            {
+                context.HttpContext.Response.ContentType = "application/problem+json";
+                if (context.Lease.TryGetMetadata(System.Threading.RateLimiting.MetadataName.RetryAfter, out TimeSpan retryAfter))
+                {
+                    context.HttpContext.Response.Headers.RetryAfter = ((int)retryAfter.TotalSeconds).ToString();
+                }
+                else
+                {
+                    context.HttpContext.Response.Headers.RetryAfter = "60";
+                }
+
+                var problem = new Microsoft.AspNetCore.Mvc.ProblemDetails
+                {
+                    Type = "about:blank",
+                    Title = "Quá nhiều yêu cầu.",
+                    Status = StatusCodes.Status429TooManyRequests,
+                    Detail = "Bạn đã gửi quá nhiều yêu cầu đăng nhập. Vui lòng thử lại sau 1 phút.",
+                    Instance = context.HttpContext.Request.Path
+                };
+                problem.Extensions["errorCode"] = "RATE_LIMIT_EXCEEDED";
+
+                await context.HttpContext.Response.WriteAsJsonAsync(problem, token);
+            };
+
+            // FR-AUTH-002 / DECISIONS D7: Endpoint login giới hạn 5 request/phút theo IP
+            options.AddPolicy("LoginRateLimitPolicy", httpContext =>
+                System.Threading.RateLimiting.RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                    factory: _ => new System.Threading.RateLimiting.FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 5,
+                        Window = TimeSpan.FromMinutes(1),
+                        QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst,
+                        QueueLimit = 0
+                    }));
+        });
+
         return services;
     }
 }
