@@ -10,3 +10,15 @@ public record CategoryDto(
     int OrderIndex,
     int RecipeCount
 );
+
+// SRS mục 8.2 - GET /categories/{slug} (FR-CAT-002)
+public record CategoryDetailDto(
+    Guid Id,
+    string Name,
+    string Slug,
+    string? Description,
+    string? ImageUrl,
+    int OrderIndex,
+    int RecipeCount,
+    IReadOnlyList<RecipeListItemDto> Recipes
+);
